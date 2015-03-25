@@ -1,5 +1,6 @@
 Django==1.7.3
 PyJWT==0.4.1
+-e git://github.com/Jucyio/agithub.git@master#egg=agithub
 argparse==1.2.1
 django-bootstrap-form-horizontal==0.0.4
 django-filter==0.9.1
