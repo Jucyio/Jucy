@@ -38,7 +38,7 @@ def ExtractUserRepo(path):
 
 def ExtractUserRepoIssue(path):
     segments = path.split('/')
-    return segments[1], segments[2], segments[3]
+    return segments[1], segments[2], int(segments[3])
 
 def board(request):
     boarduser, boardrepo = ExtractUserRepo(request.path)
@@ -48,4 +48,15 @@ def board(request):
         'boarduser': boarduser,
         'boardrepo': boardrepo,
         'issues': issues,
+    })
+
+def issue(request):
+    boarduser, boardrepo, issue_id = ExtractUserRepoIssue(request.path)
+    gh = GithubWrapper(request)
+    issue = gh.repo(boarduser, boardrepo).get_issue(issue_id)
+    return render(request, 'issue.html', {
+        'boarduser': boarduser,
+        'boardrepo': boardrepo,
+        'issue_id': issue_id,
+        'issue': issue,
     })
