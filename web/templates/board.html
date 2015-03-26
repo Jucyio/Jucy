@@ -1,0 +1,5 @@
+<ul>
+{% for i in issues %}
+<li><a href="/{{boarduser}}/{{boardrepo}}/{{i.number}}">{{i.title}}: {{i.body}}</a>
+{% endfor %}
+</ul>

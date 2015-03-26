@@ -98,6 +98,7 @@ LOGIN_ERROR_URL = '/_loginerror'
 SOCIAL_AUTH_GITHUB_SCOPE = [
     'user',
     'read:org',
+    'repo',
 ]
 
 # Dev app id/secret
