@@ -17,7 +17,7 @@ class GithubWrapper(object):
         return self.gh.get_user()
 
     def repo(self, owner, repo):
-        return self.gh.get_repo('%s/%s' % (owner, repo))
+        return self.gh.get_repo((owner, repo))
 
 def index(request):
     return render(request, 'index.html', {})
