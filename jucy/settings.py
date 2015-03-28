@@ -102,8 +102,19 @@ SOCIAL_AUTH_GITHUB_SCOPE = [
 ]
 
 # Dev app id/secret
-SOCIAL_AUTH_GITHUB_KEY = 'FILL ME'
-SOCIAL_AUTH_GITHUB_SECRET = 'FILL ME'
+SOCIAL_AUTH_GITHUB_KEY = None  # FILL ME
+SOCIAL_AUTH_GITHUB_SECRET = None  # FILL ME
+
+# Jucybot
+JUCY_BOT_LOGIN = 'JucyBot'
+JUCY_BOT_OAUTH_TOKEN = None  # FILL ME
+
+# Jucy labels
+JUCY_LABEL_NAMESPACE = 'jucy'
+JUCY_LABELS = {
+    'feedback': '00ff55',
+    'issue': 'ff0000',
+}
 
 try:
     from local_settings import *

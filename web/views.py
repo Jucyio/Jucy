@@ -1,4 +1,5 @@
 import github
+import jucybot
 from django.shortcuts import render, redirect
 from django.conf import settings
 
@@ -50,12 +51,6 @@ def issue(request, full_repo_name, issue_id):
         'issue': issue,
     })
 
-JUCY_LABEL_NAMESPACE = 'jucy'
-JUCY_LABELS = {
-    'feedback': '00ff55',
-    'issue': 'ff0000',
-}
-
 def prepare_repo_for_jucy(request, full_repo_name):
     """Prepares a Github repo to support Jucy issues.
 
@@ -79,12 +74,18 @@ def prepare_repo_for_jucy(request, full_repo_name):
     """
     gh = GithubWrapper(request)
     repo = gh.repo(full_repo_name)
-    for label, color in JUCY_LABELS.iteritems():
+
+    # Step 1 : Create all the jucy labels
+    for label, color in settings.JUCY_LABELS.iteritems():
         try:
-            repo.create_label('%s:%s' % (JUCY_LABEL_NAMESPACE, label), color)
+            repo.create_label('%s:%s' % (settings.JUCY_LABEL_NAMESPACE, label), color)
         except github.GithubException, e:
             # 422: Label already exists, that's OK.
             if e.status != 422:
                 raise e
-    # TODO(korfuri): Grant @JucyBot access to the repository.
+
+    # Step 2: grant JucyBot access to the repository
+    jb = jucybot.FromConfig()
+    jb.addAsCollaboratorOnRepo(repo)
+
     return redirect('/%s' % full_repo_name)
