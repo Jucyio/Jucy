@@ -16,8 +16,8 @@ class GithubWrapper(object):
     def user(self):
         return self.gh.get_user()
 
-    def repo(self, owner, repo):
-        return self.gh.get_repo((owner, repo))
+    def repo(self, repo):
+        return self.gh.get_repo(repo)
 
 def index(request):
     return render(request, 'index.html', {})
@@ -32,31 +32,20 @@ def pick(request):
         'repos': repos,
     })
 
-def ExtractUserRepo(path):
-    segments = path.split('/')
-    return segments[1], segments[2]
-
-def ExtractUserRepoIssue(path):
-    segments = path.split('/')
-    return segments[1], segments[2], int(segments[3])
-
-def board(request):
-    boarduser, boardrepo = ExtractUserRepo(request.path)
+def board(request, full_repo_name):
     gh = GithubWrapper(request)
-    issues = gh.repo(boarduser, boardrepo).get_issues()
+    issues = gh.repo(full_repo_name).get_issues()
     return render(request, 'board.html', {
-        'boarduser': boarduser,
-        'boardrepo': boardrepo,
+        'repo': full_repo_name,
         'issues': issues,
     })
 
-def issue(request):
-    boarduser, boardrepo, issue_id = ExtractUserRepoIssue(request.path)
+def issue(request, full_repo_name, issue_id):
+    issue_id = int(issue_id)
     gh = GithubWrapper(request)
-    issue = gh.repo(boarduser, boardrepo).get_issue(issue_id)
+    issue = gh.repo(full_repo_name).get_issue(issue_id)
     return render(request, 'issue.html', {
-        'boarduser': boarduser,
-        'boardrepo': boardrepo,
+        'repo': full_repo_name,
         'issue_id': issue_id,
         'issue': issue,
     })
