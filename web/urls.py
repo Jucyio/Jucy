@@ -15,4 +15,6 @@ urlpatterns = patterns(
         views.board, name='board'),
     url(r'^%s/%s$' % (github_user_repo_regex, github_issue_id),
         views.issue, name='issue'),
+    url(r'^%s/_setupjucy$' % (github_user_repo_regex),
+        views.prepare_repo_for_jucy, name='setupjucy'),
 )
