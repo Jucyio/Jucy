@@ -1,14 +1,9 @@
 Django==1.7.3
-PyGithub==1.25.2
+-e git://github.com/Jucyio/PyGithub.git@master#egg=PyGithub
 PyJWT==0.4.1
-agithub==1.0
 argparse==1.2.1
-django-bootstrap-form-horizontal==0.0.4
-django-filter==0.9.1
-django-markdown-deux==1.0.5
-markdown2==2.3.0
+mock==1.0.1
 oauthlib==0.7.2
-python-dateutil==2.4.0
 python-openid==2.2.5
 python-social-auth==0.2.2
 requests==2.6.0
