@@ -1,4 +1,5 @@
 import github
+import github_helpers
 import textwrap
 from django.conf import settings
 
@@ -42,6 +43,33 @@ Category: %(label_name)s
         repo = self.gh.repo(repo_fullname)
         return repo.create_issue(
             title, body=body, labels=[self.getLabelObject(repo, label_name)])
+
+    def getWebhooksCallbackUrlForRepo(self, repo):
+        return settings.WEBHOOKS_CALLBACK_URL % {
+            'owner': repo.owner.login,
+            'repository': repo.name,
+            'hooktype': 'all_issues'
+        }
+
+    def getSecretForRepo(self, repo):
+        return 'TODO(korfuri): generate per-repo secrets'
+
+    def setupHooksOnRepo(self, repo):
+        config = {
+            'url': self.getWebhooksCallbackUrlForRepo(repo),
+            'secret': self.getSecretForRepo(repo),
+            'content_type': 'json',
+            'secure_ssl': '1' if settings.DEBUG else '0',
+        }
+        try:
+            hook = repo.create_hook('web', config,
+                                    events=['issues', 'issue_change'])
+            return True
+        except github.GithubException, e:
+            if github_helpers.isGithubExceptionMessage(e, github_helpers.E_HOOK_ALREADY_EXISTS):
+                return True
+            raise e
+
 
 def FromGithubClient(gh, login=settings.JUCY_BOT_LOGIN):
     """Initializes a JucyBot instance from a Github object.

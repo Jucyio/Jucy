@@ -116,6 +116,10 @@ JUCY_LABELS = {
     'issue': 'ff0000',
 }
 
+# Webhooks callback URL
+WEBHOOKS_CALLBACK_URL = (
+    'https://jucy.io/%(owner)s/%(repository)s/_webhooks/%(hooktype)s')
+
 try:
     from local_settings import *
 except ImportError:

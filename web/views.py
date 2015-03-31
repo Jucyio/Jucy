@@ -88,4 +88,7 @@ def prepare_repo_for_jucy(request, full_repo_name):
     jb = jucybot.FromConfig()
     jb.addAsCollaboratorOnRepo(repo)
 
+    # Step 3: setup webhooks to get notifications on all issue changes
+    jb.setupHooksOnRepo(repo)
+
     return redirect('/%s' % full_repo_name)
