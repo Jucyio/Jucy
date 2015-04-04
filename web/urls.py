@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from web import views
+from web import views, webhooks
 
 github_user_regex = r'(?P<user>[a-zA-Z0-9-][a-zA-Z0-9-_]*)'
 github_repo_regex = r'(?P<repo_name>[a-zA-Z0-9-][a-zA-Z0-9-_]*)'
@@ -17,4 +17,6 @@ urlpatterns = patterns(
         views.issue, name='issue'),
     url(r'^%s/_setupjucy$' % (github_user_repo_regex),
         views.prepare_repo_for_jucy, name='setupjucy'),
+    url(r'^%s/_webhooks/all_issues' % (github_user_repo_regex),
+        webhooks.all_issues, name='all_issues'),
 )

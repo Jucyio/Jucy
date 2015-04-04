@@ -63,7 +63,7 @@ Category: %(label_name)s
         }
         try:
             hook = repo.create_hook('web', config,
-                                    events=['issues', 'issue_change'])
+                                    events=['issues', 'issue_comment'])
             return True
         except github.GithubException, e:
             if github_helpers.isGithubExceptionMessage(e, github_helpers.E_HOOK_ALREADY_EXISTS):
