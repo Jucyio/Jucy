@@ -52,7 +52,7 @@ Category: %(label_name)s
 
     def createIssue(self, repo_fullname, title, contents, label_name):
         body = self.formatIssue(contents, label_name)
-        repo = self.gh.repo(repo_fullname)
+        repo = self.gh.get_repo(repo_fullname)
         return repo.create_issue(
             title,
             body=body,
