@@ -3,6 +3,7 @@ import jucybot
 import unittest
 import mock
 
+
 class JucyBotTest(unittest.TestCase):
     def setUp(self):
         self.gh = mock.MagicMock()
@@ -14,8 +15,9 @@ Category: feedback
 
 > This website is great!
 """
-        self.assertEqual(expected, self.jb.formatIssue(
-            'This website is great!', 'feedback'))
+        self.assertEqual(expected,
+                         self.jb.formatIssue('This website is great!',
+                                             'feedback'))
 
     def testCreateIssue(self):
         repo_obj = mock.MagicMock()
@@ -25,12 +27,13 @@ Category: feedback
 
         title = 'Test issue'
         contents = 'This website is great!'
-        self.jb.createIssue(
-            'Jucyio/playground', title, contents, 'feedback')
+        self.jb.createIssue('Jucyio/playground', title, contents, 'feedback')
 
         self.gh.repo.assert_called_with('Jucyio/playground')
         repo_obj.get_label.assert_called_with('feedback')
-        repo_obj.create_issue.assert_called_with(title, body=mock.ANY, labels=[label_obj])
+        repo_obj.create_issue.assert_called_with(title,
+                                                 body=mock.ANY,
+                                                 labels=[label_obj])
 
     def testIsCollaboratorOnRepo(self):
         repo = mock.MagicMock()

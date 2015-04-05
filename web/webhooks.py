@@ -1,14 +1,18 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseNotFound
 
+
 def handle_ping(request, repo):
     return HttpResponse()
+
 
 def handle_issues(request, repo):
     return HttpResponse()
 
+
 def handle_issue_comment(request, repo):
     return HttpResponse()
+
 
 def dispatch(request, repo, hook):
     github_event = request.META.get('HTTP_X_GITHUB_EVENT')
@@ -22,6 +26,7 @@ def dispatch(request, repo, hook):
         return handle_issues(request, repo)
     else:
         return HttpResponseNotFound('Unknown event!')
+
 
 @csrf_exempt
 def all_issues(request, full_repo_name):

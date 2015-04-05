@@ -3,6 +3,7 @@ import github_helpers
 import textwrap
 from django.conf import settings
 
+
 class JucyBot(object):
     def __init__(self, gh, login):
         self.gh = gh
@@ -42,7 +43,9 @@ Category: %(label_name)s
         body = self.formatIssue(contents, label_name)
         repo = self.gh.repo(repo_fullname)
         return repo.create_issue(
-            title, body=body, labels=[self.getLabelObject(repo, label_name)])
+            title,
+            body=body,
+            labels=[self.getLabelObject(repo, label_name)])
 
     def getWebhooksCallbackUrlForRepo(self, repo):
         return settings.WEBHOOKS_CALLBACK_URL % {
@@ -66,7 +69,8 @@ Category: %(label_name)s
                                     events=['issues', 'issue_comment'])
             return True
         except github.GithubException, e:
-            if github_helpers.isGithubExceptionMessage(e, github_helpers.E_HOOK_ALREADY_EXISTS):
+            if github_helpers.isGithubExceptionMessage(
+                    e, github_helpers.E_HOOK_ALREADY_EXISTS):
                 return True
             raise e
 
@@ -79,6 +83,7 @@ def FromGithubClient(gh, login=settings.JUCY_BOT_LOGIN):
     Github client for testing purposes.
     """
     return JucyBot(gh, login)
+
 
 def FromConfig(login=settings.JUCY_BOT_LOGIN):
     """Initializes a JucyBot instance from the OAuth token in settings.py."""
