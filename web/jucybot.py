@@ -1,7 +1,18 @@
 import github
 import github_helpers
+import hmac
 import textwrap
 from django.conf import settings
+
+assert settings.WEBHOOKS_SECRET_KEY is not None, (
+    'You must set WEBHOOKS_SECRET_KEY in local_settings.py to use Jucybot')
+_hmac = hmac.new(settings.WEBHOOKS_SECRET_KEY)
+
+
+def getSecretForRepo(repo):
+    h = _hmac.copy()
+    h.update(repo.lower())
+    return h.hexdigest()
 
 
 class JucyBot(object):
@@ -54,13 +65,10 @@ Category: %(label_name)s
             'hooktype': 'all_issues'
         }
 
-    def getSecretForRepo(self, repo):
-        return 'TODO(korfuri): generate per-repo secrets'
-
     def setupHooksOnRepo(self, repo):
         config = {
             'url': self.getWebhooksCallbackUrlForRepo(repo),
-            'secret': self.getSecretForRepo(repo),
+            'secret': getSecretForRepo(repo.full_name),
             'content_type': 'json',
             'secure_ssl': '1' if settings.DEBUG else '0',
         }

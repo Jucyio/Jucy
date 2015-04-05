@@ -2,6 +2,8 @@ import github
 import jucybot
 import unittest
 import mock
+from django.test.utils import override_settings
+from django.test import TestCase
 
 
 class JucyBotTest(unittest.TestCase):
@@ -49,3 +51,22 @@ Category: feedback
         repo = mock.MagicMock()
         self.jb.addAsCollaboratorOnRepo(repo)
         repo.add_to_collaborators.assert_called_once_with('testJucyBot')
+
+
+@override_settings(PER_REPO_WEBHOOK_KEY='testkey1')
+class PerRepoSecretTest(TestCase):
+
+    def testIsIdempotent(self):
+        key1 = jucybot.getSecretForRepo('Jucyio/Jucy')
+        key2 = jucybot.getSecretForRepo('Megacorp/SuperSecretProject')
+        key3 = jucybot.getSecretForRepo('Megacorp/SuperSecretProject')
+        key4 = jucybot.getSecretForRepo('Jucyio/Jucy')
+        self.assertTrue(key1)
+        self.assertEqual(key1, key4)
+        self.assertEqual(key2, key3)
+        self.assertNotEqual(key1, key2)
+
+    def testIsCaseInsensitive(self):
+        key1 = jucybot.getSecretForRepo('Jucyio/Jucy')
+        key2 = jucybot.getSecretForRepo('jucyio/jucy')
+        self.assertEqual(key1, key2)
