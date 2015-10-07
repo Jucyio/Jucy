@@ -3,16 +3,24 @@ import jucybot
 from django.shortcuts import render, redirect
 from django.conf import settings
 
-if settings.DEBUG:
-    github.enable_console_debug_logging()
+#if settings.DEBUG:
+#    github.enable_console_debug_logging()
+
+def globalContext(request):
+    return {
+        'debug': settings.DEBUG,
+    }
 
 class GithubWrapper(object):
     def __init__(self, request):
-        self.gh = github.Github(
-            login_or_token=request.user.social_auth.get().access_token,
-            api_preview=True,  # so /user/repos returns repos in
-                               # organizations as well.
-        )
+        if request.user.is_authenticated and not request.user.is_anonymous():
+            self.gh = github.Github(
+                login_or_token=request.user.social_auth.get().access_token,
+                api_preview=True,  # so /user/repos returns repos in
+                                   # organizations as well.
+            )
+        else:
+            self.gh = github.Github(api_preview=True)
 
     def user(self):
         return self.gh.get_user()
@@ -21,37 +29,31 @@ class GithubWrapper(object):
         return self.gh.get_repo(repo)
 
 def index(request):
-    return render(request, 'index.html', {})
+    context = globalContext(request)
+    return render(request, 'index.html', context)
 
 def loginerror(request):
-    return render(request, 'loginerror.html', {})
+    context = globalContext(request)
+    return render(request, 'loginerror.html', context)
 
 def pick(request):
+    context = globalContext(request)
     gh = GithubWrapper(request)
     repos = gh.user().get_repos()
-    return render(request, 'pick.html', {
-        'repos': repos,
-    })
+    context['repos'] = repos
+    return render(request, 'pick.html', context)
 
-def board(request, full_repo_name):
-    gh = GithubWrapper(request)
-    issues = gh.repo(full_repo_name).get_issues()
-    return render(request, 'board.html', {
-        'repo': full_repo_name,
-        'issues': issues,
-    })
-
-def issue(request, full_repo_name, issue_id):
+def issue(request, full_repository_name, issue_id):
+    context = globalContext(request)
     issue_id = int(issue_id)
     gh = GithubWrapper(request)
-    issue = gh.repo(full_repo_name).get_issue(issue_id)
-    return render(request, 'issue.html', {
-        'repo': full_repo_name,
-        'issue_id': issue_id,
-        'issue': issue,
-    })
+    issue = gh.repo(full_repository_name).get_issue(issue_id)
+    context['repository'] = full_repository_name
+    context['issue_id'] = issue_id
+    context['issue'] = issue
+    return render(request, 'issue.html', context)
 
-def prepare_repo_for_jucy(request, full_repo_name):
+def prepare_repo_for_jucy(request, full_repository_name):
     """Prepares a Github repo to support Jucy issues.
 
     This creates Jucy labels and grants Jucybot access to the
@@ -73,12 +75,12 @@ def prepare_repo_for_jucy(request, full_repo_name):
 
     """
     gh = GithubWrapper(request)
-    repo = gh.repo(full_repo_name)
+    repository = gh.repo(full_repository_name)
 
     # Step 1 : Create all the jucy labels
     for label, color in settings.JUCY_LABELS.iteritems():
         try:
-            repo.create_label('%s:%s' % (settings.JUCY_LABEL_NAMESPACE, label), color)
+            repository.create_label('%s:%s' % (settings.JUCY_LABEL_NAMESPACE, label), color)
         except github.GithubException, e:
             # 422: Label already exists, that's OK.
             if e.status != 422:
@@ -86,6 +88,20 @@ def prepare_repo_for_jucy(request, full_repo_name):
 
     # Step 2: grant JucyBot access to the repository
     jb = jucybot.FromConfig()
-    jb.addAsCollaboratorOnRepo(repo)
+    jb.addAsCollaboratorOnRepo(repository)
 
-    return redirect('/%s' % full_repo_name)
+    return redirect('/%s' % full_repository_name)
+
+def ideas(request, owner, repository, full_repository_name):
+    context = globalContext(request)
+    gh = GithubWrapper(request)
+    issues = gh.repo(full_repository_name).get_issues()
+    context['repository'] = full_repository_name
+    context['issues'] = issues
+    context['current'] = 'ideas'
+    return render(request, 'ideas.html', context)
+
+def questions(request, owner, repository, full_repository_name):
+    context = globalContext(request)
+    context['current'] = 'questions'
+    return render(request, 'questions.html', context)
