@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ne6wb(po=5$8-m$o(%s1tzyx8d8dlkyfhsknb4f$-2+ife@ew8'
+SECRET_KEY = None  # FILL ME
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -115,6 +115,11 @@ JUCY_LABELS = {
     'feedback': '00ff55',
     'issue': 'ff0000',
 }
+
+# Webhooks callback URL
+WEBHOOKS_CALLBACK_URL = (
+    'https://jucy.io/%(owner)s/%(repository)s/_webhooks/%(hooktype)s')
+WEBHOOKS_SECRET_KEY = None  # FILL ME
 
 try:
     from local_settings import *

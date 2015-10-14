@@ -1,4 +1,5 @@
 import github
+import github_helpers
 import jucybot
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -82,13 +83,16 @@ def prepare_repo_for_jucy(request, full_repository_name):
         try:
             repository.create_label('%s:%s' % (settings.JUCY_LABEL_NAMESPACE, label), color)
         except github.GithubException, e:
-            # 422: Label already exists, that's OK.
-            if e.status != 422:
+            if not github_helpers.matchesGithubException(
+                    e, {'resource': 'Label', 'code': 'already_exists'}):
                 raise e
 
     # Step 2: grant JucyBot access to the repository
     jb = jucybot.FromConfig()
     jb.addAsCollaboratorOnRepo(repository)
+
+    # Step 3: setup webhooks to get notifications on all issue changes
+    jb.setupHooksOnRepo(repository)
 
     return redirect('/%s' % full_repository_name)
 
