@@ -3,6 +3,13 @@
 {% load tools %}
 
 <div class="row">
+
+<form action="{{ request.path }}_createfeedback" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
+
   {% for issue in issues %}
   {% if forloop.counter0|mod:3 %}
 </div><div class="row">

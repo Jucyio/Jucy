@@ -1,6 +1,7 @@
 import github
 import github_helpers
 import jucybot
+import forms
 from django.shortcuts import render, redirect
 from django.conf import settings
 
@@ -96,6 +97,19 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
 
     return redirect('/%s' % full_repository_name)
 
+def create_feedback(request, owner, repository, full_repository_name):
+    form = forms.FeedbackForm(request.POST)
+    if form.is_valid():
+        gh = GithubWrapper(request)
+        repository = gh.repo(full_repository_name)
+        try:
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+            repository.create_issue(title, body=content)
+        except github.GithubException, e:
+            pass #FIXME
+    return redirect('/%s' % full_repository_name)
+
 def ideas(request, owner, repository, full_repository_name):
     context = globalContext(request)
     gh = GithubWrapper(request)
@@ -103,6 +117,9 @@ def ideas(request, owner, repository, full_repository_name):
     context['repository'] = full_repository_name
     context['issues'] = issues
     context['current'] = 'ideas'
+    # Form used to create a feedback
+    context['form'] = forms.FeedbackForm()
+    context['request'] = request
     return render(request, 'ideas.html', context)
 
 def questions(request, owner, repository, full_repository_name):
