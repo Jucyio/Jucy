@@ -54,7 +54,7 @@ def issue(request, full_repository_name, issue_id):
     context['issue'] = issue
     return render(request, 'issue.html', context)
 
-def prepare_repo_for_jucy(request, full_repository_name):
+def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     """Prepares a Github repo to support Jucy issues.
 
     This creates Jucy labels and grants Jucybot access to the
