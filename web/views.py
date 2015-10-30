@@ -2,6 +2,7 @@ import github
 import github_helpers
 import jucybot
 import forms
+import labels
 from django.shortcuts import render, redirect
 from django.conf import settings
 
@@ -78,11 +79,10 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     """
     gh = GithubWrapper(request)
     repository = gh.repo(full_repository_name)
-
     # Step 1 : Create all the jucy labels
-    for label, color in settings.JUCY_LABELS.iteritems():
+    for label, color in labels.LABELS.iteritems():
         try:
-            repository.create_label('%s:%s' % (settings.JUCY_LABEL_NAMESPACE, label), color)
+            repository.create_label(label, color)
         except github.GithubException, e:
             if not github_helpers.matchesGithubException(
                     e, {'resource': 'Label', 'code': 'already_exists'}):
