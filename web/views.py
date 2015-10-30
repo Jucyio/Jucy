@@ -113,8 +113,9 @@ def create_feedback(request, owner, repository, full_repository_name):
 
 def ideas(request, owner, repository, full_repository_name):
     context = globalContext(request)
-    gh = GithubWrapper(request)
-    issues = gh.repo(full_repository_name).get_issues()
+    jb = jucybot.FromConfig()
+    repository = jb.gh.get_repo(full_repository_name)
+    issues = repository.get_issues()
     context['repository'] = full_repository_name
     context['issues'] = issues
     context['current'] = 'ideas'
