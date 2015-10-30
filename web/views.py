@@ -105,7 +105,8 @@ def create_feedback(request, owner, repository, full_repository_name):
         try:
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            repository.create_issue(title, body=content)
+            jb = jucybot.FromConfig()
+            jb.createIssue(full_repository_name, title, content, "bug")
         except github.GithubException, e:
             pass #FIXME
     return redirect('/%s' % full_repository_name)
