@@ -58,6 +58,17 @@ Category: %(label_name)s
             body=body,
             labels=[self.getLabelObject(repo, label_name)])
 
+    def changeIssueLabel(self, issue, repository, label_name):
+        labels = repository.get_labels()
+        issue_labels = issue.get_labels()
+        label = next((label for label in labels if label.name == label_name), None)
+        if not label:
+            return
+        for issue_label in issue_labels:
+            if issue_label.name != label_name:
+               issue.remove_from_labels(label)
+        issue.set_labels(label)
+
     def getWebhooksCallbackUrlForRepo(self, repo):
         return settings.WEBHOOKS_CALLBACK_URL % {
             'owner': repo.owner.login,
