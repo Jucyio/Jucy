@@ -27,7 +27,7 @@ class GithubClientMixin():
         return repo.create_issue(
             title,
             body=body,
-            labels=[self.getLabelObject(repo, label_name)])
+            labels=[self.get_label_object(repo, label_name)])
 
     def change_issue_label(self, issue, repository, label_name):
         labels = repository.get_labels()
