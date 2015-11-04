@@ -139,7 +139,7 @@ def reject_idea(request, owner, repository, full_repository_name, issue_id):
     gh = GithubWrapper(request)
     repository = gh.repo(full_repository_name)
     issue_id = int(issue_id)
-    issue = repository.get_issue(int(issue_id))
+    issue = repository.get_issue(issue_id)
     issue.edit(state="closed")
 
     issues = repository.get_issues()
