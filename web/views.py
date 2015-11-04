@@ -167,3 +167,21 @@ def approve_idea(request, owner, repository, full_repository_name, issue_id):
     context['issues'] = issues
     context['current'] = 'ideas'
     return render(request, 'ideas.html', context)
+
+def duplicate_idea(request, owner, repository, full_repository_name, issue_id):
+    '''
+    Mark an idea as duplicate: close the issue, add duplicate label, redirect to the ideas page
+    '''
+    context = globalContext(request)
+
+    gh = GithubWrapper(request)
+    repository = gh.repo(full_repository_name)
+    issue_id = int(issue_id)
+    issue = repository.get_issue(issue_id)
+    issue.edit(state="closed", labels=["duplicate"])
+
+    issues = repository.get_issues()
+    context['repository'] = full_repository_name
+    context['issues'] = issues
+    context['current'] = 'ideas'
+    return render(request, 'ideas.html', context)

@@ -31,4 +31,6 @@ urlpatterns = patterns('',
         views.reject_idea, name='reject_idea'),
     url(r'^%s/%s/_approveidea$' % (github_user_repo_regex, github_issue_id),
         views.approve_idea, name='approve_idea'),
+    url(r'^%s/%s/_duplicateidea$' % (github_user_repo_regex, github_issue_id),
+        views.duplicate_idea, name='duplicate_idea'),
 )
