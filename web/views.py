@@ -97,7 +97,10 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
 
     return redirect('/%s' % full_repository_name)
 
-def create_feedback(request, owner, repository, full_repository_name):
+def create_idea(request, owner, repository, full_repository_name):
+    '''
+    Add a new idea, posted as the JucyBot user
+    '''
     form = forms.FeedbackForm(request.POST)
     if form.is_valid():
         gh = GithubWrapper(request)
