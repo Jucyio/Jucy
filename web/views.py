@@ -97,21 +97,6 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
 
     return redirect('/%s' % full_repository_name)
 
-def create_idea(request, owner, repository, full_repository_name):
-    '''
-    Add a new idea, posted as the JucyBot user
-    '''
-    form = forms.FeedbackForm(request.POST)
-    if form.is_valid():
-        try:
-            title = form.cleaned_data['title']
-            content = form.cleaned_data['content']
-            jb = jucybot.FromConfig()
-            jb.createIssue(full_repository_name, title, content, "bug")
-        except github.GithubException, e:
-            pass #FIXME
-    return redirect('/%s' % full_repository_name)
-
 def ideas(request, owner, repository, full_repository_name):
     context = globalContext(request)
     jb = jucybot.FromConfig()
@@ -129,6 +114,21 @@ def questions(request, owner, repository, full_repository_name):
     context = globalContext(request)
     context['current'] = 'questions'
     return render(request, 'questions.html', context)
+
+def create_idea(request, owner, repository, full_repository_name):
+    '''
+    Add a new idea, posted as the JucyBot user
+    '''
+    form = forms.FeedbackForm(request.POST)
+    if form.is_valid():
+        try:
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+            jb = jucybot.FromConfig()
+            jb.createIssue(full_repository_name, title, content, "bug")
+        except github.GithubException, e:
+            pass #FIXME
+    return redirect('/%s' % full_repository_name)
 
 def reject_idea(request, owner, repository, full_repository_name, issue_id):
     '''
