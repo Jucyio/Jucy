@@ -83,7 +83,7 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
                 raise e
 
     # Step 2: grant JucyBot access to the repository
-    jb = jucybot.FromConfig()
+    jb = jucybot.from_config()
     jb.add_as_collaborator_on_repo(repository)
 
     # Step 3: setup webhooks to get notifications on all issue changes
@@ -93,7 +93,7 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
 
 def ideas(request, owner, repository, full_repository_name):
     context = globalContext(request)
-    jb = jucybot.FromConfig()
+    jb = jucybot.from_config()
     repository = jb.gh.get_repo(full_repository_name)
     issues = repository.get_issues()
     context['repository'] = full_repository_name
