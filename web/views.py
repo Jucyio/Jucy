@@ -129,3 +129,21 @@ def questions(request, owner, repository, full_repository_name):
     context = globalContext(request)
     context['current'] = 'questions'
     return render(request, 'questions.html', context)
+
+def reject_idea(request, owner, repository, full_repository_name, issue_id):
+    '''
+    Reject an idea: close the issue, redirect to the ideas page
+    '''
+    context = globalContext(request)
+
+    gh = GithubWrapper(request)
+    repository = gh.repo(full_repository_name)
+    issue_id = int(issue_id)
+    issue = repository.get_issue(int(issue_id))
+    issue.edit(state="closed")
+
+    issues = repository.get_issues()
+    context['repository'] = full_repository_name
+    context['issues'] = issues
+    context['current'] = 'ideas'
+    return render(request, 'ideas.html', context)

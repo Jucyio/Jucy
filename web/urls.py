@@ -27,4 +27,6 @@ urlpatterns = patterns('',
         views.create_idea, name='createidea'),
     url(r'^%s/_webhooks/all_issues' % (github_user_repo_regex),
         webhooks.all_issues, name='all_issues'),
+    url(r'^%s/%s/_rejectidea$' % (github_user_repo_regex, github_issue_id),
+        views.reject_idea, name='reject_idea'),
 )
