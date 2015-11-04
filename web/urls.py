@@ -29,4 +29,6 @@ urlpatterns = patterns('',
         webhooks.all_issues, name='all_issues'),
     url(r'^%s/%s/_rejectidea$' % (github_user_repo_regex, github_issue_id),
         views.reject_idea, name='reject_idea'),
+    url(r'^%s/%s/_approveidea$' % (github_user_repo_regex, github_issue_id),
+        views.approve_idea, name='approve_idea'),
 )

@@ -147,3 +147,23 @@ def reject_idea(request, owner, repository, full_repository_name, issue_id):
     context['issues'] = issues
     context['current'] = 'ideas'
     return render(request, 'ideas.html', context)
+
+def approve_idea(request, owner, repository, full_repository_name, issue_id):
+    '''
+    Approve an idea: Label the issue as ready
+    '''
+    context = globalContext(request)
+
+    gh = GithubWrapper(request)
+    repository = gh.repo(full_repository_name)
+    issue_id = int(issue_id)
+    issue = repository.get_issue(issue_id)
+    labels = repository.get_labels()
+    ready_label = next((label for label in labels if label.name == "ready"), None)
+    issue.set_labels(ready_label)
+
+    issues = repository.get_issues()
+    context['repository'] = full_repository_name
+    context['issues'] = issues
+    context['current'] = 'ideas'
+    return render(request, 'ideas.html', context)
