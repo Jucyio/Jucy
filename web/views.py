@@ -10,7 +10,7 @@ from mixins import GithubClientMixin
 #if settings.DEBUG:
 #    github.enable_console_debug_logging()
 
-def globalContext(request):
+def global_context(request):
     return {
         'debug': settings.DEBUG,
         'landing_mode': settings.LANDING_MODE,
@@ -31,6 +31,14 @@ class GithubWrapper(object, GithubClientMixin):
 def genericViewWithContext(request):
     return render(request, request.resolver_match.url_name + '.html', globalContext(request))
 
+def index(request):
+    context = global_context(request)
+    return render(request, 'index.html', context)
+
+def loginerror(request):
+    context = global_context(request)
+    return render(request, 'loginerror.html', context)
+
 def pick(request):
     if settings.LANDING_MODE:
         return redirect('/_mailing')
@@ -41,7 +49,7 @@ def pick(request):
     return render(request, 'pick.html', context)
 
 def issue(request, full_repository_name, issue_id):
-    context = globalContext(request)
+    context = global_context(request)
     issue_id = int(issue_id)
     gh = GithubWrapper(request)
     issue = gh.repo(full_repository_name).get_issue(issue_id)
@@ -92,7 +100,7 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     return redirect('/%s' % full_repository_name)
 
 def ideas(request, owner, repository, full_repository_name):
-    context = globalContext(request)
+    context = global_context(request)
     jb = jucybot.from_config()
     repository = jb.gh.get_repo(full_repository_name)
     issues = repository.get_issues()
@@ -105,7 +113,7 @@ def ideas(request, owner, repository, full_repository_name):
     return render(request, 'ideas.html', context)
 
 def questions(request, owner, repository, full_repository_name):
-    context = globalContext(request)
+    context = global_context(request)
     context['current'] = 'questions'
     return render(request, 'questions.html', context)
 
@@ -128,7 +136,7 @@ def reject_idea(request, owner, repository, full_repository_name, issue_id):
     '''
     Reject an idea: close the issue, redirect to the ideas page
     '''
-    context = globalContext(request)
+    context = global_context(request)
 
     gh = GithubWrapper(request)
     repository = gh.repo(full_repository_name)
@@ -146,7 +154,7 @@ def approve_idea(request, owner, repository, full_repository_name, issue_id):
     '''
     Approve an idea: Label the issue as ready
     '''
-    context = globalContext(request)
+    context = global_context(request)
 
     gh = GithubWrapper(request)
     repository = gh.repo(full_repository_name)
@@ -166,7 +174,7 @@ def duplicate_idea(request, owner, repository, full_repository_name, issue_id):
     '''
     Mark an idea as duplicate: close the issue, add duplicate label, redirect to the ideas page
     '''
-    context = globalContext(request)
+    context = global_context(request)
 
     gh = GithubWrapper(request)
     repository = gh.repo(full_repository_name)
