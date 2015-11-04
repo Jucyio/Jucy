@@ -103,8 +103,6 @@ def create_idea(request, owner, repository, full_repository_name):
     '''
     form = forms.FeedbackForm(request.POST)
     if form.is_valid():
-        gh = GithubWrapper(request)
-        repository = gh.repo(full_repository_name)
         try:
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
