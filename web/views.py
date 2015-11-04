@@ -5,6 +5,7 @@ import forms
 import labels
 from django.shortcuts import render, redirect
 from django.conf import settings
+from mixins import GithubClientMixin
 
 #if settings.DEBUG:
 #    github.enable_console_debug_logging()
@@ -15,7 +16,7 @@ def globalContext(request):
         'landing_mode': settings.LANDING_MODE,
     }
 
-class GithubWrapper(object):
+class GithubWrapper(object, GithubClientMixin):
     def __init__(self, request):
         if request.user.is_authenticated and not request.user.is_anonymous():
             self.gh = github.Github(
@@ -25,12 +26,7 @@ class GithubWrapper(object):
             )
         else:
             self.gh = github.Github(api_preview=True)
-
-    def user(self):
-        return self.gh.get_user()
-
-    def repo(self, repo):
-        return self.gh.get_repo(repo)
+        self.label_objects = {}
 
 def genericViewWithContext(request):
     return render(request, request.resolver_match.url_name + '.html', globalContext(request))
@@ -88,10 +84,10 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
 
     # Step 2: grant JucyBot access to the repository
     jb = jucybot.FromConfig()
-    jb.addAsCollaboratorOnRepo(repository)
+    jb.add_as_collaborator_on_repo(repository)
 
     # Step 3: setup webhooks to get notifications on all issue changes
-    jb.setupHooksOnRepo(repository)
+    jb.setup_hooks_on_repo(repository)
 
     return redirect('/%s' % full_repository_name)
 
@@ -122,8 +118,8 @@ def create_idea(request, owner, repository, full_repository_name):
         try:
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            jb = jucybot.FromConfig()
-            jb.createIssue(full_repository_name, title, content, "bug")
+            jb = jucybot.from_config()
+            jb.create_issue(full_repository_name, title, content, "bug")
         except github.GithubException, e:
             pass #FIXME
     return redirect('/%s' % full_repository_name)
