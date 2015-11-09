@@ -16,7 +16,7 @@ def global_context(request):
         'landing_mode': settings.LANDING_MODE,
     }
 
-class GithubWrapper(object, GithubClientMixin):
+class GithubWrapper(object):
     def __init__(self, request):
         if request.user.is_authenticated and not request.user.is_anonymous():
             self.gh = github.Github(
