@@ -5,7 +5,6 @@ import forms
 import labels
 from django.shortcuts import render, redirect
 from django.conf import settings
-from mixins import GithubClientMixin
 
 #if settings.DEBUG:
 #    github.enable_console_debug_logging()
@@ -85,13 +84,14 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     for label, color in labels.LABELS.iteritems():
         try:
             repository.create_label(label, color)
-        except github.GithubException, e:
+        except github.GithubException, exn:
             if not github_helpers.matchesGithubException(
-                    e, {'resource': 'Label', 'code': 'already_exists'}):
-                raise e
+                    exn, {'resource': 'Label', 'code': 'already_exists'}):
+                raise exn
 
     # Step 2: grant JucyBot access to the repository
     jb = jucybot.from_config()
+
     jb.add_as_collaborator_on_repo(repository)
 
     # Step 3: setup webhooks to get notifications on all issue changes

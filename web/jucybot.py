@@ -3,20 +3,22 @@ import github_helpers
 import hmac
 import textwrap
 from django.conf import settings
-from mixins import GithubClientMixin
 
 assert settings.WEBHOOKS_SECRET_KEY is not None, (
     'You must set WEBHOOKS_SECRET_KEY in local_settings.py to use Jucybot')
 _hmac = hmac.new(settings.WEBHOOKS_SECRET_KEY)
 
 
-def getSecretForRepo(repo):
+def get_secret_for_repo(repo):
     h = _hmac.copy()
     h.update(repo.lower())
     return h.hexdigest()
 
 
 class JucyBot(object):
+    '''
+    Module allowing to control the Jucybot account
+    '''
     def __init__(self, gh, login):
         self.gh = gh
         self.login = login
@@ -31,8 +33,8 @@ class JucyBot(object):
 
     def setup_hooks_on_repo(self, repo):
         config = {
-            'url': self.getWebhooksCallbackUrlForRepo(repo),
-            'secret': getSecretForRepo(repo.full_name),
+            'url': self.get_webhooks_callback_url_for_repo(repo),
+            'secret': get_secret_for_repo(repo.full_name),
             'content_type': 'json',
             'secure_ssl': '1' if settings.DEBUG else '0',
         }
@@ -76,7 +78,7 @@ class JucyBot(object):
             return
         for issue_label in issue_labels:
             if issue_label.name != label_name:
-               issue.remove_from_labels(label)
+                issue.remove_from_labels(label)
         issue.set_labels(label)
 
     def format_issue(self, contents, label_name):
