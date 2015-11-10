@@ -109,13 +109,6 @@ SOCIAL_AUTH_GITHUB_SECRET = None  # FILL ME
 JUCY_BOT_LOGIN = 'JucyBot'
 JUCY_BOT_OAUTH_TOKEN = None  # FILL ME
 
-# Jucy labels
-JUCY_LABEL_NAMESPACE = 'jucy'
-JUCY_LABELS = {
-    'feedback': '00ff55',
-    'issue': 'ff0000',
-}
-
 # Webhooks callback URL
 WEBHOOKS_CALLBACK_URL = (
     'https://jucy.io/%(owner)s/%(repository)s/_webhooks/%(hooktype)s')

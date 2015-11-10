@@ -1,6 +1,8 @@
 import github
 import github_helpers
 import jucybot
+import forms
+import labels
 from django.shortcuts import render, redirect
 from django.conf import settings
 
@@ -52,7 +54,7 @@ def issue(request, full_repository_name, issue_id):
     context['issue'] = issue
     return render(request, 'issue.html', context)
 
-def prepare_repo_for_jucy(request, full_repository_name):
+def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     """Prepares a Github repo to support Jucy issues.
 
     This creates Jucy labels and grants Jucybot access to the
@@ -75,11 +77,10 @@ def prepare_repo_for_jucy(request, full_repository_name):
     """
     gh = GithubWrapper(request)
     repository = gh.repo(full_repository_name)
-
     # Step 1 : Create all the jucy labels
-    for label, color in settings.JUCY_LABELS.iteritems():
+    for label, color in labels.LABELS.iteritems():
         try:
-            repository.create_label('%s:%s' % (settings.JUCY_LABEL_NAMESPACE, label), color)
+            repository.create_label(label, color)
         except github.GithubException, e:
             if not github_helpers.matchesGithubException(
                     e, {'resource': 'Label', 'code': 'already_exists'}):
@@ -96,14 +97,89 @@ def prepare_repo_for_jucy(request, full_repository_name):
 
 def ideas(request, owner, repository, full_repository_name):
     context = globalContext(request)
-    gh = GithubWrapper(request)
-    issues = gh.repo(full_repository_name).get_issues()
+    jb = jucybot.FromConfig()
+    repository = jb.gh.get_repo(full_repository_name)
+    issues = repository.get_issues()
     context['repository'] = full_repository_name
     context['issues'] = issues
     context['current'] = 'ideas'
+    # Form used to create a feedback
+    context['form'] = forms.FeedbackForm()
+    context['request'] = request
     return render(request, 'ideas.html', context)
 
 def questions(request, owner, repository, full_repository_name):
     context = globalContext(request)
     context['current'] = 'questions'
     return render(request, 'questions.html', context)
+
+def create_idea(request, owner, repository, full_repository_name):
+    '''
+    Add a new idea, posted as the JucyBot user
+    '''
+    form = forms.FeedbackForm(request.POST)
+    if form.is_valid():
+        try:
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+            jb = jucybot.FromConfig()
+            jb.createIssue(full_repository_name, title, content, "bug")
+        except github.GithubException, e:
+            pass #FIXME
+    return redirect('/%s' % full_repository_name)
+
+def reject_idea(request, owner, repository, full_repository_name, issue_id):
+    '''
+    Reject an idea: close the issue, redirect to the ideas page
+    '''
+    context = globalContext(request)
+
+    gh = GithubWrapper(request)
+    repository = gh.repo(full_repository_name)
+    issue_id = int(issue_id)
+    issue = repository.get_issue(issue_id)
+    issue.edit(state="closed")
+
+    issues = repository.get_issues()
+    context['repository'] = full_repository_name
+    context['issues'] = issues
+    context['current'] = 'ideas'
+    return render(request, 'ideas.html', context)
+
+def approve_idea(request, owner, repository, full_repository_name, issue_id):
+    '''
+    Approve an idea: Label the issue as ready
+    '''
+    context = globalContext(request)
+
+    gh = GithubWrapper(request)
+    repository = gh.repo(full_repository_name)
+    issue_id = int(issue_id)
+    issue = repository.get_issue(issue_id)
+    labels = repository.get_labels()
+    ready_label = next((label for label in labels if label.name == "ready"), None)
+    issue.set_labels(ready_label)
+
+    issues = repository.get_issues()
+    context['repository'] = full_repository_name
+    context['issues'] = issues
+    context['current'] = 'ideas'
+    return render(request, 'ideas.html', context)
+
+def duplicate_idea(request, owner, repository, full_repository_name, issue_id):
+    '''
+    Mark an idea as duplicate: close the issue, add duplicate label, redirect to the ideas page
+    '''
+    context = globalContext(request)
+
+    gh = GithubWrapper(request)
+    repository = gh.repo(full_repository_name)
+    issue_id = int(issue_id)
+    issue = repository.get_issue(issue_id)
+    issue.edit(state="closed", labels=["duplicate"])
+
+    issues = repository.get_issues()
+    context['repository'] = full_repository_name
+    context['issues'] = issues
+    context['current'] = 'ideas'
+    return render(request, 'ideas.html', context)
