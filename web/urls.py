@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.views.generic import TemplateView
 from web import views, webhooks
 
 github_user_regex = r'(?P<owner>[a-zA-Z0-9-][a-zA-Z0-9-_]*)'
@@ -13,9 +14,14 @@ boardurlpatterns = patterns('',
 )
 
 urlpatterns = patterns('',
-    url(r'^$', views.index, name='index'),
-    url(r'^_loginerror$', views.loginerror, name='loginerror'),
-    url(r'^_pick$', views.pick, name='pick'),
+    url(r'^$', views.genericViewWithContext, name='index'),
+    url(r'^_loginerror[/]+$', views.genericViewWithContext, name='loginerror'),
+    url(r'^_pick[/]+$', views.pick, name='pick'),
+    url(r'^_mailing[/]+$', views.genericViewWithContext, name='mailing'),
+    url(r'^_about[/]+$', views.genericViewWithContext, name='about'),
+    url(r'^_terms[/]+$', views.genericViewWithContext, name='terms'),
+    url(r'^_privacy[/]+$', views.genericViewWithContext, name='privacy'),
+    url(r'^_logout[/]+$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
     url(r'^' + github_user_repo_regex + '/$', include(boardurlpatterns)),
     # url(r'^%s$' % (github_user_repo_regex),
     #     views.board, name='board'),

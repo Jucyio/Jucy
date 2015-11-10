@@ -1,18 +1,19 @@
 {
-    "name": "Jucy.io",
-    "version": "0.0.0",
-    "authors": [
-	"Deby Lepage<deby@jucy.io>",
-	"Uriel Corfa <uriel@jucy.io>",
-	"Enguerrand Decorne <engil@jucy.io>"
-    ],
-    "description": "Connect developers and customers through juicy feedback within GitHub.",
-    "license": "Apache2",
-    "dependencies": {
-	"less": "~2.0.0",
-	"bootstrap": "~3.3.1",
-	"Autolinker.js": "0.15.2",
-	"css-hexagon": "0.0.0",
-	"navbar-variant": "0.0.0"
-    }
+  "name": "Jucy.io",
+  "version": "0.0.0",
+  "authors": [
+    "Deby Lepage<deby@jucy.io>",
+    "Uriel Corfa <uriel@jucy.io>",
+    "Enguerrand Decorne <engil@jucy.io>"
+  ],
+  "description": "Connect developers and customers through juicy feedback within GitHub.",
+  "license": "Apache2",
+  "dependencies": {
+    "Autolinker.js": "0.15.2",
+    "bootstrap": "~3.3.1",
+    "css-hexagon": "~0.0.0",
+    "jquery-easing": "*",
+    "less": "~2.0.0",
+    "navbar-variant": "0.0.0"
+  }
 }

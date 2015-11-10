@@ -10,6 +10,7 @@ from django.conf import settings
 def globalContext(request):
     return {
         'debug': settings.DEBUG,
+        'landing_mode': settings.LANDING_MODE,
     }
 
 class GithubWrapper(object):
@@ -29,15 +30,12 @@ class GithubWrapper(object):
     def repo(self, repo):
         return self.gh.get_repo(repo)
 
-def index(request):
-    context = globalContext(request)
-    return render(request, 'index.html', context)
-
-def loginerror(request):
-    context = globalContext(request)
-    return render(request, 'loginerror.html', context)
+def genericViewWithContext(request):
+    return render(request, request.resolver_match.url_name + '.html', globalContext(request))
 
 def pick(request):
+    if settings.LANDING_MODE:
+        return redirect('/_mailing')
     context = globalContext(request)
     gh = GithubWrapper(request)
     repos = gh.user().get_repos()

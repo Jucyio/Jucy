@@ -1,45 +1,6 @@
+{% extends 'navbarbase.html' %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <title>{% trans 'Jucy.io' %} - {% block title %}{% trans 'Connect developers and customers through juicy feedback within GitHub' %}{% endblock %}</title>
-
-    <link rel="shortcut icon" type="image/x-icon" href="/_static/favicon.ico" />
-    <link rel="stylesheet" href="/_static/bower/bootstrap/dist/css/bootstrap.min.css">
-    {% if debug %}
-    <link rel="stylesheet/less" type="text/css" href="/_static/less/style.less" />
-    <script src="/_static/bower/less/dist/less.min.js"></script>
-    {% else %}
-    <link rel="stylesheet" href="/_static/css/style.css">
-    {% endif %}
-
-    <meta property="og:image" content="/_static/img/avatar.png"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta name="description" content="{% block description %}{% trans 'Connect developers and customers through juicy feedback within GitHub' %}{% endblock %}">
-    <meta name="keywords" content="github,customers,developers,feedback,voice">
-    <meta name="twitter:creator" content="@jucyio">
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
-    </script>
-    <![endif]-->
-  </head>
-  <body>
-    {% block body %}
-    <nav class="navbar navbar-jucy navbar-fixed-top">
-      <div class="container">
-	<div class="navbar-header">
-	  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-	    <span class="sr-only">Toggle navigation</span>
-	    <span class="icon-bar"></span>
-	    <span class="icon-bar"></span>
-	    <span class="icon-bar"></span>
-	  </button>
-	  <a class="navbar-brand" href="/">
-	    {% trans 'Jucy.io' %}</a>
-	</div>
-	<div class="collapse navbar-collapse collapse">
-	  <ul class="nav navbar-nav navbar-right">
+{% block navbuttons %}
 	    <li class="{% if current == 'ideas' %}active{% endif %}"><a href="/{{ repository }}/ideas/">{% trans 'Ideas' %}</a></li>
 	    <li class="dropdown">
 	      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">
@@ -53,19 +14,4 @@
 		<li><a href="#contactModal" data-toggle="ajaxmodal"><i class="flaticon-contact"></i> Contact Us</a></li>
 	      </ul>
 	    </li>
-	  </ul>
-	</div>
-      </div>
-    </nav>
-    <main class="container">
-      {% block content %}
-      {% endblock %}
-    </main>
-    {% endblock %}
-
-    <script src="/_static/bower/jquery/dist/jquery.min.js"></script>
-    <script src="/_static/bower/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/_static/js/main.js"></script>
-    {% block js %}{% endblock %}
-  </body>
-</html>
+{% endblock %}

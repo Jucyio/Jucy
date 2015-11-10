@@ -1,0 +1,25 @@
+{% extends 'navbarbase.html' %}
+{% block navbuttons %}
+{% load i18n %}
+<li class="{% if current == 'about' %}active{% endif %}"><a href="/_about/">{% trans 'About' %}</a></li>
+{% if user.is_authenticated %}
+<li><a href="/_pick/" class="{% if current == 'pick' %}active{% endif %}">{% trans 'Your repositories' %}</a></li>
+<li><a href="/_logout/"><i class="flaticon-logout"></i> {% trans 'Logout' %}</a></li>
+{% else %}
+<li><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}"><i class="flaticon-logout"></i> Log in</a></li>
+<li><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}" class="{% if current == 'pick' %}active{% endif %}">
+    {% trans 'Get Jucy' %}
+    <img height="20" src="/_static/img/whitejucy.svg" alt="jucy" />
+  </a>
+</li>
+{% endif %}
+</ul>
+</li>
+{% endblock %}
+
+{% block stickyfooter %}<div id="sticky-footer-wrapper" class="withnav">{% endblock %}
+{% block endstickyfooter %}</div>{% endblock %}
+
+{% block footer %}
+{% include 'include/footer.html' %}
+{% endblock %}

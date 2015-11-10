@@ -1,0 +1,29 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>{% trans 'Jucy.io' %} - {% block title %}{% trans 'Connect developers and customers through juicy feedback within GitHub' %}{% endblock %}</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="/_static/favicon.ico" />
+    <link rel="stylesheet" href="/_static/bower/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/_static/fonts/flaticon.css">
+    <link rel="stylesheet" href="/_static/bower/emojione/assets/css/emojione.min.css">
+    {% if debug %}
+    <link rel="stylesheet/less" type="text/css" href="/_static/less/style.less" />
+    <script src="/_static/bower/less/dist/less.min.js"></script>
+    {% else %}
+    <link rel="stylesheet" href="/_static/css/style.css">
+    {% endif %}
+    {% block css %}{% endblock %}
+
+    <meta property="og:image" content="/_static/img/avatar.png"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="{% block description %}{% trans 'Connect developers and customers through juicy feedback within GitHub' %}{% endblock %}">
+    <meta name="keywords" content="github,customers,developers,feedback,voice">
+    <meta name="twitter:creator" content="@jucyio">
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
+    </script>
+    <![endif]-->
+  </head>

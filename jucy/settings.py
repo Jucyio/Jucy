@@ -121,6 +121,8 @@ WEBHOOKS_CALLBACK_URL = (
     'https://jucy.io/%(owner)s/%(repository)s/_webhooks/%(hooktype)s')
 WEBHOOKS_SECRET_KEY = None  # FILL ME
 
+LANDING_MODE = False
+
 try:
     from local_settings import *
 except ImportError:

@@ -1,0 +1,39 @@
+{% load i18n %}
+{% include 'include/head.html' %}
+  <body>
+    {% block body %}
+    <nav class="navbar navbar-jucy navbar-fixed-top">
+      <div class="container">
+	<div class="navbar-header">
+	  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+	    <span class="sr-only">Toggle navigation</span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	  </button>
+	  <a class="navbar-brand" href="/">
+	    <img src="/_static/img/whiteslice.svg" class="icon" />
+	    <span class="logo">{% trans 'jucy' %}</span>
+	</div>
+	<div class="collapse navbar-collapse collapse">
+	  <ul class="nav navbar-nav navbar-right">
+	    {% block navbuttons %}{% endblock %}
+	  </ul>
+	</div>
+      </div>
+    </nav>
+    {% block stickyfooter %}{% endblock %}
+    <main class="container">
+      {% block content %}
+      {% endblock %}
+    </main>
+    {% block endstickyfooter %}{% endblock %}
+    {% endblock %}
+
+    {% block footer %}
+    {% endblock %}
+
+    {% include 'include/js.html' %}
+    {% block js %}{% endblock %}
+  </body>
+</html>

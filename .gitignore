@@ -89,3 +89,7 @@ tramp
 
 # cask packages
 .cask/
+
+
+# jucy
+web/static/bower/

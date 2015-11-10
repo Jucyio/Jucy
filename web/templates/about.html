@@ -1,0 +1,194 @@
+{% extends 'jucybase.html' %}
+{% block content %}
+{% load i18n %}
+<hr class="margin50">
+<h1>{% trans 'About' %}</h1>
+
+<div class="pull-right">
+  <a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}"
+     class="btn btn-jucy btn-xl margin20">
+    {% trans 'Get jucy' %}
+    <img src="/_static/img/whitejucy.svg" width="40" alt="jucy" />
+  </a>
+</div>
+
+<p class="fontx1-5 margin50">
+  {% blocktrans %}
+  Jucy is a customer support widget and dashboard by developers, for developers.
+  {% endblocktrans %}
+  <br>
+  {% blocktrans %}
+  Because, as a tech team, you don't have to hire someone to communicate with your users - you just need the right tool.
+  {% endblocktrans %}<br>
+  <a href="/#pages">{% trans 'Learn more' %}</a>
+</p>
+
+<hr class="margin50">
+<h2 id="team">{% trans 'Team' %}</h2>
+
+<div class="row team">
+  <div class="col-md-4">
+    <a target="_blank" href="http://github.com/db0company/">
+      <img src="/_static/img/team/deby.svg" alt="Deby" class="img-circle img-thumbnail " />
+      <h3>Deby</h3>
+      <p>{% trans 'Fresh-squeezed OJ' %}</p>
+    </a>
+  </div>
+  <div class="col-md-4">
+    <a target="_blank" href="http://github.com/Engil/">
+      <img src="/_static/img/team/engil.svg" alt="Engil" class="img-circle img-thumbnail " />
+      <h3>Engil</h3>
+      <p>{% trans 'Spicy lemonade' %}</p>
+    </a>
+  </div>
+  <div class="col-md-4">
+    <a target="_blank" href="http://github.com/thomasletscher/">
+      <img src="/_static/img/team/thomas.svg" alt="Thomas" class="img-circle img-thumbnail " />
+      <h3>Thomas</h3>
+      <p>{% trans 'Tangerine juice' %}</p>
+    </a>
+  </div>
+</div>
+
+<hr class="margin50">
+
+<h2 id="contact">{% trans 'Contact' %}</h2>
+
+<div class="pull-right text-center">
+  <br>
+  <a href="mailto:hello@jucy.io" class="btn btn-jucy btn-lg">{% trans 'Contact us' %}</a><br>
+  <small class="text-muted">hello@jucy.io</small>
+</div>
+
+<p class="margin50">
+  {% blocktrans %}
+  Question? Feedback? Just want to say hi?
+  {% endblocktrans %}<br>
+  <strong>
+    {% blocktrans %}
+    We would love to talk to you.
+    {% endblocktrans %}
+  </strong><br>
+  <i class="text-muted">
+    {% blocktrans %}
+    Feel free to write in any language.
+    {% endblocktrans %}
+  </i>
+</p>
+<p class="fontx2 margin50">
+  <a href="mailto:hello@jucy.io"><i class="flaticon-message"></i> hello@jucy.io</a>&nbsp;&nbsp;&nbsp;
+  <a href="https://twitter.com/jucyio"><i class="flaticon-twitter"></i> Twitter</a>&nbsp;&nbsp;&nbsp;
+  <a href="https://www.facebook.com/jucyio/"><i class="flaticon-facebook"></i> Facebook</a>&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/Jucyio"><i class="flaticon-github-head"></i> GitHub</a>
+</p>
+
+<h2 id="jobs">{% trans 'Jobs' %}</h2>
+
+<div class="well margin50">
+  <p>
+    {% blocktrans %}
+    Jucy contributors are the best! Some know how to code, some do design, marketing or business and others like to knit! All skills are great to have in a startup so whatever your talent, if you want to help, we want to hear from you!
+    {% endblocktrans %}
+  </p>
+  <p>
+    {% blocktrans %}
+    Our contributors want to be a part of Jucy because they want to improve their skills, participate in a very cool project or just want to be part of a crazy adventure.
+    {% endblocktrans %}
+  </p>
+  <p>
+    {% blocktrans %}
+    We have lots of different positions to offer and can always find a way to adapt to your skills, your schedule and your working habits. We like to think we're kind human beings and we enjoy spending time together (and not always necessarily working). So apply today! We guarantee you'll have a lot of fun ;)
+    {% endblocktrans %}
+  </p>
+  <p class="text-right">
+    <a href="mailto:jobs@jucy.io" class="btn btn-jucy btn-lg">{% trans 'Contact us' %}</a><br>
+    <small class="text-muted">jobs@jucy.io</small>
+  </p>
+</div>
+
+<hr class="margin50">
+
+<h2 id="press">{% trans 'Press' %}</h2>
+
+<div class="row">
+  <div class="col-md-4">
+    <br>
+    <p>
+      {% blocktrans %}
+      We'd be happy to answer all your questions, either in real life, on the phone, on a video-conference tool over the internet, on the social networks or by e-mail (as far as possible).
+      {% endblocktrans %}
+    </p>
+    <p>
+      <a href="mailto:hello@jucy.io">{% trans 'Contact us' %}</a>
+      {% trans 'so we can arrange that for you.' %}
+    </p>
+  </div>
+  <div class="col-md-4">
+    <ul>
+      <li>
+	<a href="/_static/img/bar.svg" target="_blank">
+	  <img src="/_static/img/bar.svg" width="30" />
+	  {% trans 'Download' %} {% trans 'logo' %}
+	</a>
+	<br><br>
+      </li>
+      <li>
+	<a href="/_static/img/bar.png" target="_blank">
+	  <img src="/_static/img/bar.png" width="30" />
+	  {% trans 'Download' %} {% trans 'logo (png)' %}
+	</a>
+	<br><br>
+      </li>
+      <li>
+	<a href="/_static/img/jucy.svg" target="_blank">
+	  <img src="/_static/img/jucy.svg" width="30" />
+	  {% trans 'Download' %} {% trans 'orange icon' %}
+	</a>
+	<br><br>
+      </li>
+      <li>
+	<a href="/_static/img/whitejucy.svg" target="_blank">
+	  <img src="/_static/img/whitejucy.svg" width="30" style="background: #ccc; padding: 2px;" />
+	  {% trans 'Download' %} {% trans 'white icon' %}
+	</a>
+	<br><br>
+      </li>
+    </ul>
+  </div>
+  <div class="col-md-4">
+    <ul>
+      <li>
+	<a href="/_static/img/squaredicon.svg" target="_blank">
+	  <img src="/_static/img/squaredicon.svg" width="30" />
+	  {% trans 'Download' %} {% trans 'squared icon with background' %}
+	</a>
+	<br><br>
+      </li>
+      <li>
+	<a href="/_static/img/slice.svg" target="_blank">
+	  <img src="/_static/img/slice.svg" width="30" />
+	  {% trans 'Download' %} {% trans 'orange slice' %}
+	</a>
+	<br><br>
+      </li>
+      <li>
+	<a href="/_static/img/whiteslice.svg" target="_blank">
+	  <img src="/_static/img/whiteslice.svg" width="30" style="background: #ccc; padding: 2px;" />
+	  {% trans 'Download' %} {% trans 'white slice' %}
+	</a>
+	<br><br>
+      </li>
+      <li>
+	<a href="/_static/fonts/CW_BANDY.ttf" target="_blank">
+	  <span class="logo">jucy</span>
+	  {% trans 'Download' %} {% trans 'font' %}
+	</a>
+	<br><br>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<hr class="margin50">
+
+{% endblock %}

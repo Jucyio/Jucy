@@ -1,2 +1,299 @@
+{% load i18n %}
+{% include 'include/head.html' %}
+<body id="index">
+  <div id="sticky-footer-wrapper">
+    <header class="oval-speech">
+      <h1 class="logo">jucy&nbsp;<span><img src="/_static/img/whitejucy.svg"></span></h1>
+      <h2>{% trans 'Connect developers and customers' %}</h2>
+    </header>
+    <section id="characters" class="hidden-sm hidden-xs">
+      <div class="container">
+	<div class="row">
+	  <div class="col-md-4">
+	    <img src="/_static/img/customers.svg">
+	  </div>
+	  <div class="col-md-4">
+	    <img src="/_static/img/connect.svg" width="50%">
+	  </div>
+	  <div class="col-md-4">
+	    <img src="/_static/img/github.svg">
+	  </div>
+	</div>
+      </div>
+    </section>
+    <section id="action">
+      <div class="container">
+	<div class="row">
+	  <div class="col-md-4">
+	    <br><br>
+	    <p>
+	      Jucy is a <strong>customer support</strong> widget and dashboard by developers, for developers.
+	    </p>
+	    <p>
+	      Because, as a <strong>tech team</strong>, you don't have to hire someone to communicate with your users - you just need the right tool.
+	    </p>
+	  </div>
+	  <div class="col-md-8">
+	    <a class="btn btn-invert btn-xxl" href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}">
+	      {% trans 'Get jucy' %}
+	      <img src="/_static/img/jucy.svg" height="80">
+	      <small>{% trans 'with GitHub' %}
+		<i class="flaticon-github-head"></i>
+	      </small>
+	    </a>
+	    <a href="#pages" class="page-scroll">
+	      {% trans 'Learn more' %}
+	    </a>
+	  </div>
+	</div>
+      </div>
+    </section>
+    <section id="pages">
+      <div class="container">
+	<h1>{% trans 'How does it work?' %}</h1>
+	<div class="row">
+	  <div class="col-md-4">
+	    <div class="page">
+	      <div class="button">
+		<i class="flaticon-widget"></i>
+	      </div>
+	      <div class="row">
+		<div class="col-xs-4">
+		  <div class="step">1</div>
+		</div>
+		<div class="col-xs-8">
+		  <p>
+		    {% blocktrans %}
+		    In just a few clicks, install a <strong>widget</strong> in your website or your mobile app.
+		    {% endblocktrans %}
+		  </p>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	  <div class="col-md-4">
+	    <div class="page">
+	      <div class="button">
+		<i class="flaticon-octocat-stache"></i>
+	      </div>
+	      <div class="row">
+		<div class="col-xs-4">
+		  <div class="step">2</div>
+		</div>
+		<div class="col-xs-8">
+		  <p>
+		    {% blocktrans %}
+		    Start getting users' feedback, posted on GitHub.
+		    No need to change your habits!
+		    {% endblocktrans %}
+		  </p>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	  <div class="col-md-4">
+	    <div class="page">
+	      <div class="button">
+		<i class="flaticon-website"></i>
+	      </div>
+	      <div class="row">
+		<div class="col-xs-4">
+		  <div class="step">3</div>
+		</div>
+		<div class="col-xs-8">
+		  <p>
+		    {% blocktrans %}
+		    Accept or reject users' feedback on Jucy's friendly dashboard - or on GitHub!
+		    {% endblocktrans %}
+		  </p>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </section>
+    <section id="components">
+      <div class="container">
+	<h1>{% trans 'What do you get?' %}</h1>
+	<div class="row">
+	  <div class="col-md-4">
+	    <div class="button">
+	      <i class="flaticon-idea"></i>
+	    </div>
+	    <h4>{% trans 'Ideas' %}</h4>
+	    <p>
+	      {% blocktrans %}
+	      Gather feature requests and bug reports from your users.
+	      {% endblocktrans %}
+	    </p>
+	  </div>
+	  <div class="col-md-4">
+	    <div class="button">
+	      <i class="flaticon-question"></i>
+	    </div>
+	    <h4>{% trans 'Questions' %}</h4>
+	    <p>
+	      {% blocktrans %}
+	      Your F.A.Q. on how to use your product, simplified.
+	      {% endblocktrans %}
+	    </p>
+	  </div>
+	  <div class="col-md-4">
+	    <div class="button">
+	      <i class="flaticon-star"></i>
+	    </div>
+	    <h4>{% trans 'Reviews' %}</h4>
+	    <p>
+	      {% blocktrans %}
+	      From encouragments to personal issues, let your users talk to you.
+	      {% endblocktrans %}
+	    </p>
+	  </div>
+	</div>
+      </div>
+    </section>
+    <section id="action-again">
+      <div class="container">
+	<div class="row">
+	  <div class="col-md-7">
+	    <a class="btn btn-invert btn-xl" href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}">
+	      {% trans 'Get jucy' %}
+	      <img src="/_static/img/jucy.svg" height="80">
+	      <small>{% trans 'Connect with GitHub' %}
+		<i class="flaticon-github-head"></i>
+	      </small>
+	    </a>
+	  </div>
+	  <div class="col-md-5">
+	    <br>
+	    <p>
+	      {% blocktrans %}
+	      In just a few clicks, get a preview of your very own Jucy dashboard for one of your GitHub repositories.
+	      {% endblocktrans %}
+	    </p>
+	    <!-- <p><small> -->
+	    <!--   {% blocktrans %}Or check out Jucy's Jucy dashboard{% endblocktrans %} <a href="/Jucyio/Jucy/">{% trans 'here' %}</a> {% trans '- so meta.' %} -->
+	    <!-- </small></p> -->
+	  </div>
+	</div>
+      </div>
+    </section>
+    <section id="features">
+      <div class="container">
+	<h1>{% trans 'Features' %}</h1>
+	<div class="row">
+	  <div class="col-md-6">
+	    <ul>
+	      <li>
+		<span class="emojione-render">🛠</span>
+		{% trans 'Highly customizable widget for:' %}
+		<ul>
+		  <li>{% trans 'Your website, with Javascript' %}</li>
+		  <li>{% trans 'Your Android App' %} <small class="text-muted"><i>{% trans 'coming soon' %}</i></small></li>
+		  <li>{% trans 'Your iOs App' %} <small class="text-muted"><i>{% trans 'coming soon' %}</i></small></li>
+		</ul>
+	      </li>
+	      <li>
+		<i class="flaticon-website"></i>
+		{% trans 'Your own customizable Jucy dashboard' %}
+		<ul>
+		  <li>{% trans 'Manage your feedback with just a few clicks' %}</li>
+		  <li>{% trans 'Let your users browse all the previously submitted ideas and find the answers to their questions' %}</li>
+		</ul>
+	      </li>
+	      <li>
+		<i class="flaticon-heart"></i>
+		{% trans 'Let your users vote for their favorite feature to help you take decisions and prioritize' %}
+		<ul>
+		  <li>{% trans 'They can pick their favorite idea between 2 random directly within the widget' %}</li>
+		  <li>{% trans 'They can browse all the ideas in your Jucy dashboard and upvote their favorites' %}</li>
+		</ul>
+	      </li>
+	      <li>
+		<i class="flaticon-message"></i>
+		{% trans 'Users follow ideas and receive updated by email' %}
+		<ul>
+		  <li>{% trans 'When the idea gets officially accepted' %}</li>
+		  <li>{% trans 'If you want to ask them questions' %}</li>
+		  <li>{% trans 'When the feature is finally published' %}</li>
+		</ul>
+	      </li>
+	      <li>
+		<i class="flaticon-question"></i>
+		{% trans 'Self-service help desk' %}
+		<ul>
+		  <li>{% trans 'When users start typing a question, Jucy show them the answers of previously asked questions' %}</li>
+		</ul>
+	      </li>
+	      <li>
+		<span class="emojione-render">🌍</span>
+		{% trans 'International interface and messages' %}
+		<ul>
+		  <li>{% trans 'Pick the main language of your product and of your repository' %}</li>
+		  <li>{% trans 'Reply to your users in their language' %}</li>
+		</ul>
+	      </li>
+	    </ul>
+	  </div>
+	  <div class="col-md-6">
+	    <ul>
+	      <li>
+		<span class="emojione-render">🔒</span>
+		{% trans 'Messages can be public or private' %}
+		<ul>
+		  <li>{% trans 'Live-chat style messaging within the widget' %}</li>
+		  <li>{% trans 'They decide to talk to you in public or in private' %}</li>
+		  <li>{% trans 'Public messages with good reviews get posted as hall of fame in your Jucy dashboard' %}</li>
+		</ul>
+	      </li>
+	      <li>
+		<i class="flaticon-check"></i>
+		{% trans 'For each new feature request or bug report, chose to accept, reject, mark as dupplicate or simply reply' %}
+		<ul>
+		  <li>{% trans 'From your Jucy dashboard' %}</li>
+		  <li>{% trans 'From GitHub' %} <small class="text-muted"><i>{% trans 'issue interface or by email' %}</i></small></li>
+		</ul>
+	      </li>
+	      <li>
+		<i class="flaticon-conversation"></i>
+		{% trans 'Pre-configured customizable messages templates' %}
+		<ul>
+		  <li>{% trans 'While developers keep it short, users need context and greetings, but writing poetry is not your job' %}</li>
+		  <li>{% blocktrans %}Developers and customers don't speak the same language - Jucy is your translator{% endblocktrans %}</li>
+		</ul>
+	      </li>
+	      <li>
+		<i class="flaticon-octocat"></i>
+		{% trans 'Full integration with GitHub' %}
+		<ul>
+		  <li>{% trans 'No need to change the tools you use everyday: everything you do with GitHub gets synchronized with Jucy - and vice-versa' %}</li>
+		</ul>
+	      </li>
+	      <li>
+		<i class="flaticon-widget-reverse"></i>
+		{% trans 'Integration with' %} <a href="https://waffle.io/" target="_blank">waffle.io</a>
+		<ul>
+		  <li>{% trans 'If you like managing your issues kanban-style, Jucy and Waffle work well together' %}</li>
+		</ul>
+	      </li>
+	      <li>
+		<i class="flaticon-code"></i>
+		{% trans 'A full featured web API lets you make Jucy your own' %}
+		<ul>
+		  <li>{% trans 'Because we know that as a developer, you like tinkering with your tools' %}</li>
+		</ul>
+	      </li>
 
-<a href="/_oauth/login/github">login with github</a>
+	    </ul>
+	  </div>
+	</div>
+      </div>
+    </section>
+  </div> <!-- index-wrapper -->
+
+    {% include 'include/footer.html' %}
+    {% include 'include/js.html' %}
+    {% block js %}{% endblock %}
+  </body>
+</html>
