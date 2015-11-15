@@ -14,6 +14,7 @@
     "css-hexagon": "~0.0.0",
     "jquery-easing": "*",
     "less": "~2.0.0",
-    "navbar-variant": "0.0.0"
+    "navbar-variant": "0.0.0",
+    "emojione": "~1.5.2"
   }
 }
