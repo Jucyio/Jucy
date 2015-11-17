@@ -28,7 +28,7 @@ class GithubWrapper(object):
         self.label_objects = {}
 
 def genericViewWithContext(request):
-    return render(request, request.resolver_match.url_name + '.html', globalContext(request))
+    return render(request, request.resolver_match.url_name + '.html', global_context(request))
 
 def index(request):
     context = global_context(request)
@@ -41,7 +41,7 @@ def loginerror(request):
 def pick(request):
     if settings.LANDING_MODE:
         return redirect('/_mailing')
-    context = globalContext(request)
+    context = global_context(request)
     gh = GithubWrapper(request)
     repos = gh.user().get_repos()
     context['repos'] = repos
