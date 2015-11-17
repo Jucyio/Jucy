@@ -25,13 +25,13 @@ Category: feedback
         repo_obj = mock.MagicMock()
         label_obj = mock.MagicMock()
         repo_obj.get_label.return_value = label_obj
-        self.gh.repo.return_value = repo_obj
+        self.gh.get_repo.return_value = repo_obj
 
         title = 'Test issue'
         contents = 'This website is great!'
         self.jb.create_issue('Jucyio/playground', title, contents, 'feedback')
 
-        self.gh.repo.assert_called_with('Jucyio/playground')
+        self.gh.get_repo.assert_called_with('Jucyio/playground')
         repo_obj.get_label.assert_called_with('feedback')
         repo_obj.create_issue.assert_called_with(title,
                                                  body=mock.ANY,
