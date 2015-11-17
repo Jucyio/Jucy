@@ -1,4 +1,4 @@
-# Jucy
+# Jucy [![Build Status](https://travis-ci.org/Jucyio/Jucy.svg?branch=master)](https://travis-ci.org/Jucyio/Jucy)
 
 Connect developers and customers through juicy feedback within GitHub.
 
