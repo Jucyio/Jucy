@@ -105,14 +105,20 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
 
     return redirect('/%s' % full_repository_name)
 
+def prepare_issues_context(context, full_repository_name, repository, current_view):
+    try:
+        issues = repository.get_issues()
+        context['issues'] = issues
+    except github.GithubException, exn:
+        pass #FIXME
+    context['repository'] = full_repository_name
+    context['current'] = current_view
+
 def ideas(request, owner, repository, full_repository_name):
     context = global_context(request)
     jb = jucybot.from_config()
     repository = jb.gh.get_repo(full_repository_name)
-    issues = repository.get_issues()
-    context['repository'] = full_repository_name
-    context['issues'] = issues
-    context['current'] = 'ideas'
+    prepare_issues_context(context, full_repository_name, repository, 'ideas')
     # Form used to create a feedback
     context['form'] = forms.FeedbackForm()
     context['request'] = request
@@ -150,10 +156,7 @@ def reject_idea(request, owner, repository, full_repository_name, issue_id):
     issue = repository.get_issue(issue_id)
     issue.edit(state="closed")
 
-    issues = repository.get_issues()
-    context['repository'] = full_repository_name
-    context['issues'] = issues
-    context['current'] = 'ideas'
+    prepare_issues_context(context, full_repository_name, repository, 'ideas')
     return render(request, 'ideas.html', context)
 
 def approve_idea(request, owner, repository, full_repository_name, issue_id):
@@ -170,10 +173,7 @@ def approve_idea(request, owner, repository, full_repository_name, issue_id):
     ready_label = next((label for label in labels if label.name == "ready"), None)
     issue.set_labels(ready_label)
 
-    issues = repository.get_issues()
-    context['repository'] = full_repository_name
-    context['issues'] = issues
-    context['current'] = 'ideas'
+    prepare_issues_context(context, full_repository_name, repository, 'ideas')
     return render(request, 'ideas.html', context)
 
 def duplicate_idea(request, owner, repository, full_repository_name, issue_id):
@@ -188,8 +188,5 @@ def duplicate_idea(request, owner, repository, full_repository_name, issue_id):
     issue = repository.get_issue(issue_id)
     issue.edit(state="closed", labels=["duplicate"])
 
-    issues = repository.get_issues()
-    context['repository'] = full_repository_name
-    context['issues'] = issues
-    context['current'] = 'ideas'
+    prepare_issues_context(context, full_repository_name, repository, 'ideas')
     return render(request, 'ideas.html', context)
