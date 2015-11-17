@@ -78,7 +78,7 @@ class JucyBot(object):
             return
         for issue_label in issue_labels:
             if issue_label.name != label_name:
-                issue.remove_from_labels(label)
+                issue.remove_from_labels(issue_label)
         issue.set_labels(label)
 
     def format_issue(self, contents, label_name):
