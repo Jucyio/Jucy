@@ -1,0 +1,7 @@
+SECRET_KEY = 'secretkey'
+SOCIAL_AUTH_GITHUB_KEY = 'sample'
+SOCIAL_AUTH_GITHUB_SECRET = 'sample'
+JUCY_BOT_OAUTH_TOKEN = 'sample'
+WEBHOOKS_SECRET_KEY = 'sample'
+DEBUG = True
+TEMPLATE_DEBUG = True

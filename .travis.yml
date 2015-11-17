@@ -7,6 +7,7 @@ python:
 install: "pip install -r requirements.txt"
 
 before_script:
+  - cp jucy/local_settings.sample jucy/local_settings.py
   - python manage.py migrate
 
 script:
