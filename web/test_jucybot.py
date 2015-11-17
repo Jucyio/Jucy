@@ -52,6 +52,21 @@ Category: feedback
         self.jb.add_as_collaborator_on_repo(repo)
         repo.add_to_collaborators.assert_called_once_with('testJucyBot')
 
+    def testChangeIssueLabel(self):
+        repo = mock.MagicMock()
+        label1 = mock.MagicMock()
+        label1.name = 'label1'
+        label2 = mock.MagicMock()
+        label2.name = 'label2'
+        label3 = mock.MagicMock()
+        label3.name = 'label3'
+        issue = mock.MagicMock()
+        issue.get_labels.return_value = [label1, label2]
+        repo.get_labels.return_value = [label1, label2, label3]
+
+        self.jb.change_issue_label(issue, repo, 'label3')
+        issue.remove_from_labels.assert_has_calls([mock.call(label1), mock.call(label2)])
+        issue.set_labels.assert_called_once_with(label3)
 
 @override_settings(PER_REPO_WEBHOOK_KEY='testkey1')
 class PerRepoSecretTest(TestCase):
