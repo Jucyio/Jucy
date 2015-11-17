@@ -27,6 +27,12 @@ class GithubWrapper(object):
             self.gh = github.Github(api_preview=True)
         self.label_objects = {}
 
+    def user(self):
+        return self.gh.get_user()
+
+    def repo(self, repo):
+        return self.gh.get_repo(repo)
+
 def genericViewWithContext(request):
     return render(request, request.resolver_match.url_name + '.html', global_context(request))
 
