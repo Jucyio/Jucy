@@ -3,7 +3,7 @@ import github
 E_HOOK_ALREADY_EXISTS = u'Hook already exists on this repository'
 
 
-def matchesGithubException(e, description, code=422):
+def matches_github_exception(e, description, code=422):
     """Returns True if a GithubException was raised for a single error
     matching the provided dict.
 
@@ -23,8 +23,8 @@ def matchesGithubException(e, description, code=422):
     return True
 
 
-def isGithubExceptionMessage(e, message):
+def is_github_exception_message(e, message):
     """Returns True if a GithubException was raised for a single error
     matching the provided message.
     """
-    return matchesGithubException(e, {u'message': message})
+    return matches_github_exception(e, {u'message': message})

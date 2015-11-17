@@ -18,34 +18,34 @@ class isGithubExceptionMessageTest(unittest.TestCase):
 
     def testStatusNotError(self):
         e = GithubException(200, self.hook_exists_data)
-        self.assertFalse(github_helpers.isGithubExceptionMessage(
+        self.assertFalse(github_helpers.is_github_exception_message(
             e, github_helpers.E_HOOK_ALREADY_EXISTS))
 
     def testStatusNot422(self):
         e = GithubException(404, self.hook_exists_data)
-        self.assertFalse(github_helpers.isGithubExceptionMessage(
+        self.assertFalse(github_helpers.is_github_exception_message(
             e, github_helpers.E_HOOK_ALREADY_EXISTS))
 
     def testWorks(self):
         e = GithubException(422, self.hook_exists_data)
-        self.assertTrue(github_helpers.isGithubExceptionMessage(
+        self.assertTrue(github_helpers.is_github_exception_message(
             e, github_helpers.E_HOOK_ALREADY_EXISTS))
 
     def testBadDicts(self):
         data = copy.deepcopy(self.hook_exists_data)
-        self.assertTrue(github_helpers.isGithubExceptionMessage(
+        self.assertTrue(github_helpers.is_github_exception_message(
             GithubException(422, data), github_helpers.E_HOOK_ALREADY_EXISTS))
         data['errors'] = [{u'code': u'custom', u'resource': u'Hook'}]
-        self.assertFalse(github_helpers.isGithubExceptionMessage(
+        self.assertFalse(github_helpers.is_github_exception_message(
             GithubException(422, data), github_helpers.E_HOOK_ALREADY_EXISTS))
         data['errors'] = [{u'message': u'Hook already exists on this repository', u'code': u'custom', u'resource': u'Hook'}, {u'message': u'Hook already exists on this repository', u'code': u'custom', u'resource': u'Hook'}]
-        self.assertFalse(github_helpers.isGithubExceptionMessage(
+        self.assertFalse(github_helpers.is_github_exception_message(
             GithubException(422, data), github_helpers.E_HOOK_ALREADY_EXISTS))
         data['errors'] = []
-        self.assertFalse(github_helpers.isGithubExceptionMessage(
+        self.assertFalse(github_helpers.is_github_exception_message(
             GithubException(422, data), github_helpers.E_HOOK_ALREADY_EXISTS))
         del data['errors']
-        self.assertFalse(github_helpers.isGithubExceptionMessage(
+        self.assertFalse(github_helpers.is_github_exception_message(
             GithubException(422, data), github_helpers.E_HOOK_ALREADY_EXISTS))
 
 
@@ -58,44 +58,44 @@ class matchesGithubExceptionTest(unittest.TestCase):
         }
 
     def testStatus(self):
-        self.assertTrue(github_helpers.matchesGithubException(
+        self.assertTrue(github_helpers.matches_github_exception(
             GithubException(422, self.makeErrorDict({'a': 'b'})), {}))
-        self.assertFalse(github_helpers.matchesGithubException(
+        self.assertFalse(github_helpers.matches_github_exception(
             GithubException(404, self.makeErrorDict({'a': 'b'})), {}))
-        self.assertTrue(github_helpers.matchesGithubException(
+        self.assertTrue(github_helpers.matches_github_exception(
             GithubException(404, self.makeErrorDict({'a': 'b'})), {}, code=404))
 
     def testArray(self):
-        self.assertFalse(github_helpers.matchesGithubException(
+        self.assertFalse(github_helpers.matches_github_exception(
             GithubException(422, {}), {}))
-        self.assertFalse(github_helpers.matchesGithubException(
+        self.assertFalse(github_helpers.matches_github_exception(
             GithubException(422, {u'errors': []}), {}))
-        self.assertFalse(github_helpers.matchesGithubException(
+        self.assertFalse(github_helpers.matches_github_exception(
             GithubException(422, {u'errors': [{}, {}]}), {}))
-        self.assertTrue(github_helpers.matchesGithubException(
+        self.assertTrue(github_helpers.matches_github_exception(
             GithubException(422, {u'errors': [{}]}), {}))
 
     def testDicts(self):
-        self.assertTrue(github_helpers.matchesGithubException(
+        self.assertTrue(github_helpers.matches_github_exception(
             GithubException(422, self.makeErrorDict({})), {}))
-        self.assertTrue(github_helpers.matchesGithubException(
+        self.assertTrue(github_helpers.matches_github_exception(
             GithubException(422, self.makeErrorDict({
                 u'foo': u'bar',
             })), {}))
-        self.assertTrue(github_helpers.matchesGithubException(
+        self.assertTrue(github_helpers.matches_github_exception(
             GithubException(422, self.makeErrorDict({
                 u'foo': u'bar',
             })), {
                 u'foo': u'bar',
             }))
-        self.assertTrue(github_helpers.matchesGithubException(
+        self.assertTrue(github_helpers.matches_github_exception(
             GithubException(422, self.makeErrorDict({
                 u'foo': u'bar',
                 u'baz': u'qux',
             })), {
                 u'foo': u'bar',
             }))
-        self.assertTrue(github_helpers.matchesGithubException(
+        self.assertTrue(github_helpers.matches_github_exception(
             GithubException(422, self.makeErrorDict({
                 u'foo': u'bar',
                 u'baz': u'qux',
@@ -103,14 +103,14 @@ class matchesGithubExceptionTest(unittest.TestCase):
                 u'baz': u'qux',
                 u'foo': u'bar',
             }))
-        self.assertFalse(github_helpers.matchesGithubException(
+        self.assertFalse(github_helpers.matches_github_exception(
             GithubException(422, self.makeErrorDict({
                 u'foo': u'bar',
             })), {
                 u'foo': u'bar',
                 u'baz': u'qux',
             }))
-        self.assertFalse(github_helpers.matchesGithubException(
+        self.assertFalse(github_helpers.matches_github_exception(
             GithubException(422, self.makeErrorDict({
                 u'foo': u'bar',
                 u'baz': u'corge',
@@ -118,7 +118,7 @@ class matchesGithubExceptionTest(unittest.TestCase):
                 u'foo': u'bar',
                 u'baz': u'qux',
             }))
-        self.assertFalse(github_helpers.matchesGithubException(
+        self.assertFalse(github_helpers.matches_github_exception(
             GithubException(422, {}), self.makeErrorDict({
                 u'foo': u'bar',
                 u'baz': u'qux',
