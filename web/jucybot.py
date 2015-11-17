@@ -9,25 +9,52 @@ assert settings.WEBHOOKS_SECRET_KEY is not None, (
 _hmac = hmac.new(settings.WEBHOOKS_SECRET_KEY)
 
 
-def getSecretForRepo(repo):
+def get_secret_for_repo(repo):
     h = _hmac.copy()
     h.update(repo.lower())
     return h.hexdigest()
 
 
 class JucyBot(object):
+    '''
+    Module allowing to control the Jucybot account
+    '''
     def __init__(self, gh, login):
         self.gh = gh
         self.login = login
         self.label_objects = {}
 
-    def isCollaboratorOnRepo(self, repo):
+    def get_webhooks_callback_url_for_repo(self, repo):
+        return settings.WEBHOOKS_CALLBACK_URL % {
+            'owner': repo.owner.login,
+            'repository': repo.name,
+            'hooktype': 'all_issues'
+        }
+
+    def setup_hooks_on_repo(self, repo):
+        config = {
+            'url': self.get_webhooks_callback_url_for_repo(repo),
+            'secret': get_secret_for_repo(repo.full_name),
+            'content_type': 'json',
+            'secure_ssl': '1' if settings.DEBUG else '0',
+        }
+        try:
+            hook = repo.create_hook('web', config,
+                                    events=['issues', 'issue_comment'])
+            return True
+        except github.GithubException, e:
+            if github_helpers.isGithubExceptionMessage(
+                    e, github_helpers.E_HOOK_ALREADY_EXISTS):
+                return True
+            raise e
+
+    def is_collaborator_on_repo(self, repo):
         return repo.has_in_collaborators(self.login)
 
-    def addAsCollaboratorOnRepo(self, repo):
+    def add_as_collaborator_on_repo(self, repo):
         repo.add_to_collaborators(self.login)
 
-    def getLabelObject(self, repo, label_name):
+    def get_label_object(self, repo, label_name):
         key = (repo.full_name, label_name)
         if key in self.label_objects:
             return self.label_objects[key]
@@ -35,7 +62,26 @@ class JucyBot(object):
         self.label_objects[key] = label
         return label
 
-    def formatIssue(self, contents, label_name):
+    def create_issue(self, repo_fullname, title, contents, label_name):
+        body = self.format_issue(contents, label_name)
+        repo = self.gh.get_repo(repo_fullname)
+        return repo.create_issue(
+            title,
+            body=body,
+            labels=[self.get_label_object(repo, label_name)])
+
+    def change_issue_label(self, issue, repository, label_name):
+        labels = repository.get_labels()
+        issue_labels = issue.get_labels()
+        label = next((label for label in labels if label.name == label_name), None)
+        if not label:
+            return
+        for issue_label in issue_labels:
+            if issue_label.name != label_name:
+                issue.remove_from_labels(label)
+        issue.set_labels(label)
+
+    def format_issue(self, contents, label_name):
         # TODO(db0): Specify the boilerplate content for Jucy issues.
         boilerplate = """*This issue was filed by Jucy*
 Category: %(label_name)s
@@ -50,51 +96,7 @@ Category: %(label_name)s
             'contents_as_quote': contents_as_quote,
         }
 
-    def createIssue(self, repo_fullname, title, contents, label_name):
-        body = self.formatIssue(contents, label_name)
-        repo = self.gh.get_repo(repo_fullname)
-        return repo.create_issue(
-            title,
-            body=body,
-            labels=[self.getLabelObject(repo, label_name)])
-
-    def changeIssueLabel(self, issue, repository, label_name):
-        labels = repository.get_labels()
-        issue_labels = issue.get_labels()
-        label = next((label for label in labels if label.name == label_name), None)
-        if not label:
-            return
-        for issue_label in issue_labels:
-            if issue_label.name != label_name:
-               issue.remove_from_labels(label)
-        issue.set_labels(label)
-
-    def getWebhooksCallbackUrlForRepo(self, repo):
-        return settings.WEBHOOKS_CALLBACK_URL % {
-            'owner': repo.owner.login,
-            'repository': repo.name,
-            'hooktype': 'all_issues'
-        }
-
-    def setupHooksOnRepo(self, repo):
-        config = {
-            'url': self.getWebhooksCallbackUrlForRepo(repo),
-            'secret': getSecretForRepo(repo.full_name),
-            'content_type': 'json',
-            'secure_ssl': '1' if settings.DEBUG else '0',
-        }
-        try:
-            hook = repo.create_hook('web', config,
-                                    events=['issues', 'issue_comment'])
-            return True
-        except github.GithubException, e:
-            if github_helpers.isGithubExceptionMessage(
-                    e, github_helpers.E_HOOK_ALREADY_EXISTS):
-                return True
-            raise e
-
-
-def FromGithubClient(gh, login=settings.JUCY_BOT_LOGIN):
+def from_github_client(gh, login=settings.JUCY_BOT_LOGIN):
     """Initializes a JucyBot instance from a Github object.
 
     The Github object must be authenticated as the JucyBot
@@ -104,7 +106,7 @@ def FromGithubClient(gh, login=settings.JUCY_BOT_LOGIN):
     return JucyBot(gh, login)
 
 
-def FromConfig(login=settings.JUCY_BOT_LOGIN):
+def from_config(login=settings.JUCY_BOT_LOGIN):
     """Initializes a JucyBot instance from the OAuth token in settings.py."""
     token = settings.JUCY_BOT_OAUTH_TOKEN
     assert token, 'JucyBot needs an OAuth token to operate.'
