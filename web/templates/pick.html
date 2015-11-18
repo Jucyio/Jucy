@@ -1,6 +1,31 @@
-Pick a board:<br>
-<ul>
-{% for r in repos %}
-<li><a href="/{{r.full_name}}">{{r.full_name}}</a>
+{% extends 'jucybase.html' %}
+{% block content %}
+{% load i18n %}
+
+{% if boards %}
+<h1>{% trans 'Your jucy dashboards' %}</h1>
+
+{% for board in boards %}
+<a href="/{{ board }}" target="_blank" class="btn btn-jucy btn-lg">{{ board}}</a>
 {% endfor %}
-</ul>
+
+<hr class="margin50">
+{% endif %}
+
+<h1>{% trans 'Create a new dashboard' %}</h1>
+
+<input class="typeahead" type="text" placeholder="{% trans 'Repository' %}">
+{% endblock %}
+
+{% block js %}
+<script>
+  var repositories = [
+  {% for r in repos %}
+  '{{r.full_name}}',
+  {% endfor %}
+  ];
+</script>
+<script src="/_static/bower/typeahead.js/dist/bloodhound.min.js"></script>
+<script src="/_static/bower/typeahead.js/dist/typeahead.jquery.min.js"></script>
+<script src="/_static/js/pick.js"></script>
+{% endblock %}
