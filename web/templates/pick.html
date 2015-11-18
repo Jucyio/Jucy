@@ -10,11 +10,17 @@
 {% endfor %}
 
 <hr class="margin50">
-{% endif %}
 
 <h1>{% trans 'Create a new dashboard' %}</h1>
 
-<input class="typeahead" type="text" placeholder="{% trans 'Repository' %}">
+{% endif %}
+
+<form class="form-group create-dashboard margin50">
+  <input class="form-control input-lg typeahead" type="text" placeholder="{% trans 'Repository' %}">
+  <div class="text-right">
+    <input type="submit" class="btn btn-jucy btn-lg" value="{% trans 'Get started' %}">
+  </div>
+</form>
 {% endblock %}
 
 {% block js %}
