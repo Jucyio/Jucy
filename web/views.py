@@ -92,7 +92,7 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
         try:
             repository.create_label(label, color)
         except github.GithubException, exn:
-            if not github_helpers.matchesGithubException(
+            if not github_helpers.matches_github_exception(
                     exn, {'resource': 'Label', 'code': 'already_exists'}):
                 raise exn
 

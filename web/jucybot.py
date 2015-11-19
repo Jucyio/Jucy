@@ -43,7 +43,7 @@ class JucyBot(object):
                                     events=['issues', 'issue_comment'])
             return True
         except github.GithubException, e:
-            if github_helpers.isGithubExceptionMessage(
+            if github_helpers.is_github_exception_message(
                     e, github_helpers.E_HOOK_ALREADY_EXISTS):
                 return True
             raise e
