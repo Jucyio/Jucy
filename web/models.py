@@ -9,6 +9,9 @@ class Repo(models.Model):
     name = models.CharField(max_length=256)
     owner = models.CharField(max_length=256)
 
+    def full_repository_name(self):
+        return '{}/{}'.format(owner, name)
+
 class Idea(models.Model):
     subscribers = models.ManyToManyField(Subscriber, related_name='ideas')
     repository = models.ForeignKey(Repo, related_name='ideas')
