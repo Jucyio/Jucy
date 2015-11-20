@@ -3,8 +3,8 @@ from django.views.generic import TemplateView
 from web import views, webhooks
 
 github_user_regex = r'(?P<owner>[a-zA-Z0-9-][a-zA-Z0-9-_]*)'
-github_repo_regex = r'(?P<repository>[a-zA-Z0-9-][a-zA-Z0-9-_]*)'
-github_user_repo_regex = r'(?P<full_repository_name>(?P<owner>[a-zA-Z0-9-][a-zA-Z0-9-_]*)/(?P<repository>[a-zA-Z0-9-][a-zA-Z0-9-_]*))'
+github_repo_regex = r'(?P<repository>[a-zA-Z0-9-][a-zA-Z0-9-_\.]*)'
+github_user_repo_regex = r'(?P<full_repository_name>(?P<owner>[a-zA-Z0-9-][a-zA-Z0-9-_]*)/(?P<repository>[a-zA-Z0-9-\.][a-zA-Z0-9-_\.]*))'
 github_issue_id = r'(?P<issue_id>[0-9]+)'
 
 boardurlpatterns = patterns('',
