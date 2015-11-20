@@ -96,6 +96,9 @@ Category: %(label_name)s
             'contents_as_quote': contents_as_quote,
         }
 
+    def get_repos(self):
+        return self.gh.get_user().get_repos()
+
 def from_github_client(gh, login=settings.JUCY_BOT_LOGIN):
     """Initializes a JucyBot instance from a Github object.
 
