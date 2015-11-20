@@ -3,6 +3,7 @@ import github_helpers
 import jucybot
 import forms
 import labels
+import models
 from django.shortcuts import render, redirect
 from django.conf import settings
 
@@ -88,11 +89,11 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
 
     """
     gh = GithubWrapper(request)
-    repository = gh.repo(full_repository_name)
+    repo = gh.repo(full_repository_name)
     # Step 1 : Create all the jucy labels
     for label, color in labels.LABELS.iteritems():
         try:
-            repository.create_label(label, color)
+            repo.create_label(label, color)
         except github.GithubException, exn:
             if not github_helpers.matches_github_exception(
                     exn, {'resource': 'Label', 'code': 'already_exists'}):
@@ -101,11 +102,14 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     # Step 2: grant JucyBot access to the repository
     jb = jucybot.from_config()
 
-    jb.add_as_collaborator_on_repo(repository)
+    jb.add_as_collaborator_on_repo(repo)
 
     # Step 3: setup webhooks to get notifications on all issue changes
-    jb.setup_hooks_on_repo(repository)
+    jb.setup_hooks_on_repo(repo)
 
+    # Step 4: create a Repo object and save it
+    repo_model, _ =  models.Repo.objects.get_or_create(name=repository, owner=owner)
+    repo_model.save()
     return redirect('/%s' % full_repository_name)
 
 def prepare_issues_context(context, full_repository_name, repository, current_view):
