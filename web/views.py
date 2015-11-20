@@ -34,6 +34,9 @@ class GithubWrapper(object):
     def repo(self, repo):
         return self.gh.get_repo(repo)
 
+    def is_collaborator_on_repo(self, repo):
+        return repo.has_in_collaborators(self.gh.get_user().login)
+
 def genericViewWithContext(request):
     return render(request, request.resolver_match.url_name + '.html', global_context(request))
 
@@ -125,6 +128,13 @@ def ideas(request, owner, repository, full_repository_name):
     context = global_context(request)
     jb = jucybot.from_config()
     repository = jb.gh.get_repo(full_repository_name)
+
+    context['is_collaborator'] = False
+    if request.user.is_authenticated():
+        gh = GithubWrapper(request)
+        if gh.is_collaborator_on_repo(repository):
+            context['is_collaborator'] = True
+
     prepare_issues_context(context, full_repository_name, repository, 'ideas')
     # Form used to create a feedback
     context['form'] = forms.FeedbackForm()
