@@ -115,9 +115,29 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     repo_model.save()
     return redirect('/%s' % full_repository_name)
 
+def get_tagged_issues(repository):
+    issues = repository.get_issues(state='all')
+    issues_objects = list()
+    for issue in issues:
+        issue_object = dict()
+        issue_object['issue'] = issue
+        if issue.closed_at is not None:
+            if any(label.name == 'duplicate' for label in issue.labels):
+                issue_object['state'] = 'duplicate'
+            elif any(label.name == 'rejected' for label in issue.labels):
+                issue_object['state'] = 'rejected'
+            else:
+                issue_object['state'] = 'done'
+        elif any(label.name == 'ready' for label in issue.labels):
+            issue_object['state'] = 'ready'
+        else:
+            issue_object['state'] = 'new'
+        issues_objects.append(issue_object)
+    return issues_objects
+
 def prepare_issues_context(context, full_repository_name, repository, current_view):
     try:
-        issues = repository.get_issues()
+        issues = get_tagged_issues(repository)
         context['issues'] = issues
     except github.GithubException, exn:
         pass #FIXME

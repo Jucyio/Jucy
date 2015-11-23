@@ -8,8 +8,8 @@
 </div><div class="row">
   {% endif %}
   <div class="col-md-4">
-    <div class="issue {{ issue.state }} {% for label in issue.labels %}github-label-{{ label.name }}{% endfor %}" id="issue{{ issue.id }}">
-      <a href="#details{{ issue.id }}" data-toggle="collapse" class="title">{{ issue.title }}</a>
+    <div class="issue {{ issue.issue.state }} {% for label in issue.issue.labels %}github-label-{{ label.name }}{% endfor %}" id="issue{{ issue.issue.id }}">
+      <a href="#details{{ issue.issue.id }}" data-toggle="collapse" class="title">{{ issue.issue.title }}</a>
       <div class="details collapse" id="details{{ issue.id }}">
 	{% if issue.body %}
 	<span class="body">{{ issue.body }}</span>
