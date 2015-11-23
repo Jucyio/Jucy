@@ -131,7 +131,7 @@ def get_tagged_issues(repository):
     for issue in issues:
         issue_object = dict()
         issue_object['issue'] = issue
-        if issue.closed_at is not None:
+        if issue.state == 'closed':
             if any(label.name == 'duplicate' for label in issue.labels):
                 issue_object['state'] = 'duplicate'
             elif any(label.name == 'rejected' for label in issue.labels):
