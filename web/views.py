@@ -201,7 +201,7 @@ def reject_idea(request, owner, repository, full_repository_name, issue_id):
     repository = gh.repo(full_repository_name)
     issue_id = int(issue_id)
     issue = repository.get_issue(issue_id)
-    issue.edit(state="closed")
+    issue.edit(state="closed", labels=['rejected'])
 
     prepare_issues_context(context, full_repository_name, repository, 'ideas')
     return render(request, 'ideas.html', context)
