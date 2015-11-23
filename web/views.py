@@ -116,6 +116,16 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     return redirect('/%s' % full_repository_name)
 
 def get_tagged_issues(repository):
+    """
+    Retrieve issues for the repository argument, and tag them accordingly to the following rules:
+    - If an issue is closed, and the duplicate label is set: 'duplicate'
+    - If an issue is closed, and the rejected label is set: 'rejected'
+    - If an issue is closed without the aforementioned labels: 'done'
+    - If an issue is open, with a ready label set: 'ready'
+    - If an issue is open without the ready label: 'new'
+
+    See https://github.com/Jucyio/Jucy/issues/5
+    """
     issues = repository.get_issues(state='all')
     issues_objects = list()
     for issue in issues:
