@@ -5,6 +5,7 @@ DUPLICATE = 'duplicate'
 FEEDBACK = 'feedback'
 ISSUE = 'issue'
 BUG = 'bug'
+REJECTED = 'rejected'
 
 LABELS = {
     READY: '00ff55',
@@ -12,4 +13,5 @@ LABELS = {
     FEEDBACK: 'ff0000',
     ISSUE: 'ff0000',
     BUG: 'ff0000',
+    REJECTED: 'ff0000',
 }
