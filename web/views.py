@@ -115,7 +115,7 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     repo_model.save()
     return redirect('/%s' % full_repository_name)
 
-def get_tagged_issues(repository):
+def get_tagged_issues(repository, context):
     """
     Retrieve issues for the repository argument, and tag them accordingly to the following rules:
     - If an issue is closed, and the duplicate label is set: 'duplicate'
@@ -127,28 +127,29 @@ def get_tagged_issues(repository):
     See https://github.com/Jucyio/Jucy/issues/5
     """
     issues = repository.get_issues(state='all')
-    issues_objects = list()
+
+    context['duplicate'] = list()
+    context['rejected'] = list()
+    context['ready'] = list()
+    context['done'] = list()
+    context['new'] = list()
+
     for issue in issues:
-        issue_object = dict()
-        issue_object['issue'] = issue
         if issue.state == 'closed':
             if any(label.name == 'duplicate' for label in issue.labels):
-                issue_object['state'] = 'duplicate'
+                context['duplicate'].append(issue)
             elif any(label.name == 'rejected' for label in issue.labels):
-                issue_object['state'] = 'rejected'
+                context['rejected'].append(issue)
             else:
-                issue_object['state'] = 'done'
+                context['done'].append(issue)
         elif any(label.name == 'ready' for label in issue.labels):
-            issue_object['state'] = 'ready'
+            context['ready'].append(issue)
         else:
-            issue_object['state'] = 'new'
-        issues_objects.append(issue_object)
-    return issues_objects
+            context['new'].append(issue)
 
 def prepare_issues_context(context, full_repository_name, repository, current_view):
     try:
-        issues = get_tagged_issues(repository)
-        context['issues'] = issues
+        get_tagged_issues(repository, context)
     except github.GithubException, exn:
         pass #FIXME
     context['repository'] = full_repository_name
