@@ -4,8 +4,11 @@ import jucybot
 import forms
 import labels
 import models
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.core.urlresolvers import resolve
 from django.conf import settings
+from web.utils import *
 
 #if settings.DEBUG:
 #    github.enable_console_debug_logging()
@@ -14,6 +17,7 @@ def global_context(request):
     return {
         'debug': settings.DEBUG,
         'landing_mode': settings.LANDING_MODE,
+        'current': resolve(request.path_info).url_name,
     }
 
 class GithubWrapper(object):
@@ -51,6 +55,8 @@ def loginerror(request):
 def pick(request):
     if settings.LANDING_MODE:
         return redirect('/_mailing')
+    if 'repository' in request.POST:
+        return redirect('/' + request.POST['repository'])
     context = global_context(request)
     context['repos'] = ['Asteks/Moulinettes','Asteks/poolTek0','db0company/AndroidReviews','db0company/API.swift','db0company/cha.moe','db0company/Chrono.db0','db0company/Copliator','db0company/css-hexagon','db0company/CuteForm','db0company/db0.fr','db0company/django-media-manager','db0company/ExSwift','db0company/FFmpeg','db0company/ffmpeg-web','db0company/Gallery','db0company/GCal','db0company/generic-api','db0company/GitHub-API-OCaml','db0company/HenTie','db0company/Ionis-Users-Informations','db0company/Ionis-Users-Informations-Web-Service','db0company/itoa','db0company/itunes-iap','db0company/Konami','db0company/Lambda-calcul_eval_AST','db0company/linguist','db0company/List','db0company/lolicri.es','db0company/Meow','db0company/MyAnimeList-pictures','db0company/navbar-variant','db0company/Ocsigen-Quick-Howto','db0company/OcsiTools','db0company/PaginatedTableView','db0company/Pathname','db0company/paysdu42','db0company/R-Type','db0company/Radio.db0','db0company/s3_bucket_to_bucket_copy_py','db0company/Social-Bar','db0company/UCBerkeley-cs61c','db0company/UCBerkeley-cs61c-Project2','db0company/Zappy','db0company/Zero-Fansub-website','db0company/Zia','gilfein/YESorNO','gilfein/YESorNO-API','LamaUrbain/Experimentations','LamaUrbain/LamaFetcher','LamaUrbain/LamaMobile','LamaUrbain/LamaServer','LamaUrbain/LamaVitrine','LamaUrbain/LamaWeb','LamaUrbain/libosmscout','LamaUrbain/ocaml-gpx','LamaUrbain/ocaml-memphis','LamaUrbain/Tasks','Lateb/dtc.lateb.org','Lateb/Epicard','Lateb/fortune','Lateb/www','Life-the-game/APInode','Life-the-game/APIpy','Life-the-game/Applications','Life-the-game/django-ios-notifications','Life-the-game/HappyPie','Life-the-game/iOs','Life-the-game/Missions','Life-the-game/Open-Discussions','Life-the-game/Portal','Life-the-game/Preview','Life-the-game/Scripts','Life-the-game/SDK-JQuery','Life-the-game/SDK-OCaml','Life-the-game/SDK-PHP','Life-the-game/Showcase','Life-the-game/Tasks','Life-the-game/Website','mindie/Mindie-WWW','ReturnToLife/BiblioTECH','ReturnToLife/Dev','ReturnToLife/Pi-E','ReturnToLife/Portal2','ReturnToLife/Portal3','ReturnToLife/Portal4','ReturnToLife/Portal4_API','ReturnToLife/Portal5','ReturnToLife/Portal5_API','rFlex/YESorNO-API','SchoolIdolTomodachi/frgl','SchoolIdolTomodachi/SchoolIdolAPI','SchoolIdolTomodachi/SchoolIdolContest','SchoolIdolTomodachi/Sukutomo-Android','SchoolIdolTomodachi/Sukutomo-iOs','Solvik/Zappy','unitech-io/EChat','unitech-io/ESchool','unitech-io/Nurse-api-sandbox','unitech-io/p3ee-blog-theme','unitech-io/Quizzy',]
    # gh = GithubWrapper(request)
@@ -137,14 +143,19 @@ def get_tagged_issues(repository, context):
     for issue in issues:
         if issue.state == 'closed':
             if any(label.name == 'duplicate' for label in issue.labels):
+                issue.jucy_status = 'duplicate'
                 context['duplicate'].append(issue)
             elif any(label.name == 'rejected' for label in issue.labels):
+                issue.jucy_status = 'rejected'
                 context['rejected'].append(issue)
             else:
+                issue.jucy_status = 'done'
                 context['done'].append(issue)
         elif any(label.name == 'ready' for label in issue.labels):
+            issue.jucy_status = 'ready'
             context['ready'].append(issue)
         else:
+            issue.jucy_status = 'new'
             context['new'].append(issue)
 
 def prepare_issues_context(context, full_repository_name, repository, current_view):
@@ -167,9 +178,14 @@ def ideas(request, owner, repository, full_repository_name):
             context['is_collaborator'] = True
 
     prepare_issues_context(context, full_repository_name, repository, 'ideas')
+    if context['is_collaborator']:
+        context['issues'] = context['new'] + context['ready']
+    else:
+        context['issues'] = context['ready']
     # Form used to create a feedback
     context['form'] = forms.FeedbackForm()
     context['request'] = request
+    context['full_repository_name'] = full_repository_name
     return render(request, 'ideas.html', context)
 
 def questions(request, owner, repository, full_repository_name):
@@ -238,3 +254,25 @@ def duplicate_idea(request, owner, repository, full_repository_name, issue_id):
 
     prepare_issues_context(context, full_repository_name, repository, 'ideas')
     return render(request, 'ideas.html', context)
+
+def get_issue_comments(request, owner, repository, full_repository_name, issue_id):
+    '''
+    Get the comments of an issue
+    '''
+    gh = GithubWrapper(request)
+    repository = gh.repo(full_repository_name)
+    issue_id = int(issue_id)
+    issue = repository.get_issue(issue_id)
+    comments = issue.get_comments()
+    comments = [comment_command(comment) for comment in comments]
+    return render(request, 'ajax/comments.html', {
+        'comments': comments,
+    })
+    # comments = {'comments': [{
+    #     'body': comment.body,
+    #     'user': None if not comment.user or comment.user.login == 'jucybot' else {
+    #         'avatar': comment.user.avatar_url,
+    #         'login': comment.user.login,
+    #     },
+    # } for comment in comments]}
+    return JsonResponse(json_comments)

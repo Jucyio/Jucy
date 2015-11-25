@@ -8,3 +8,13 @@
 	}
     }
 }
+
+.a-variant(@color, @secondary) {
+    a {
+	color: @color;
+	&:hover,
+	&:focus {
+            color: @secondary;
+	}
+    }
+}

@@ -101,6 +101,8 @@ SOCIAL_AUTH_GITHUB_SCOPE = [
     'repo',
 ]
 
+DEFAULT_AVATAR = 'http://localhost:8000/_static/img/defaultavatar.png'
+
 # Dev app id/secret
 SOCIAL_AUTH_GITHUB_KEY = None  # FILL ME
 SOCIAL_AUTH_GITHUB_SECRET = None  # FILL ME

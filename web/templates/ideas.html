@@ -1,15 +1,57 @@
 {% extends 'base.html' %}
-{% block content %}
-<div class="row">
+{% load i18n %}
 
-{% if is_collaborator %}
-  {% with new|add:ready as issues %}
-    {% include "ideas_listing.html" %}
-  {% endwith %}
-{% else %}
-  {% with ready as issues %}
-    {% include "ideas_listing.html" %}
-  {% endwith %}
-{% endif %}
-</div>
+{% block js %}
+<script src="/_static/bower/marked/marked.min.js"></script>
+<script src="/_static/js/issues.js"></script>
+{% endblock %}
+
+{% block content %}
+{% load tools %}
+<div class="row">
+  {% for issue in issues %}
+  {% if forloop.counter0|mod:3 %}
+</div><div class="row">
+  {% endif %}
+  <div class="col-md-4">
+    <div class="issue {{ issue.state }} {% for label in issue.labels %}github-label-{{ label.name }}{% endfor %}" id="issue{{ issue.id }}" data-issue-number="{{ issue.number }}">
+      <a href="#details{{ issue.id }}" data-toggle="collapse" class="title">
+	{{ issue.title }}
+	{% if issue.body %}
+	<i class="flaticon-more text-muted fontx0-5"></i>
+	{% endif %}
+      </a>
+      <div class="details collapse" id="details{{ issue.id }}">
+	{% if issue.body %}
+	<div class="body marked">{{ issue.body }}
+	</div> <!-- body -->
+	{% endif %}
+	{% if issue.comments %}
+	<div class="messages text-center collapse">
+	  <div class="text-center text-muted">
+	    <i class="flaticon-loader fontx1-5"></i>
+	  </div>
+	</div> <!-- messages -->
+	{% endif %}
+      </div> <!-- details -->
+      <div class="buttons text-right">
+	{% if is_collaborator %}
+	<a href="{{ issue.html_url }}" target="_blank"><i class="flaticon-github-head fontx2"></i></a>
+	{% else %}
+	<a href="#like"><i class="flaticon-heart fontx2"></i></a>
+	{% endif %}
+	{% if issue.comments %}
+	<a href="#messages"><span class="text">{{ issue.comments }}</span> <i class="flaticon-conversation fontx2"></i></a>
+	{% endif %}
+	{% if user.is_authenticated %}
+	{% if issue.jucy_status == 'new' %}
+	<a href="#details{{ issue.id }}" data-toggle="collapse"><i class="flaticon-new fontx2-7"></i></a>
+	{% endif %}
+	{% endif %}
+      </div> <!-- buttons -->
+    </div> <!-- issue -->
+  </div> <!-- col -->
+  {% endfor %}
+</div> <!-- row -->
+
 {% endblock %}

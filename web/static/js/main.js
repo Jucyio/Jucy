@@ -9,4 +9,7 @@ $(function() {
     $('.emojione-render').each(function() {
 	$(this).html(emojione.toImage($(this).text()));
     });
+    $('.marked').each(function() {
+	$(this).html(marked($(this).html()));
+    });
 });

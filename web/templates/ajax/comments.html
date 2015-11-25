@@ -1,0 +1,21 @@
+<ul>
+  {% for comment in comments %}
+  <li>
+    <div class="top">
+      <div class="date pull-right text-muted">
+	{{ comment.updated_at }}
+      </div>
+      <div class="author">
+	<img src="{{ comment.author.avatar }}">
+	{{ comment.author.username }}
+	{% if comment.author.github_url %}
+	<a href="{{ comment.author.github_url }}" target="_blank">
+	  <i class="flaticon-github-head"></i>
+	</a>
+	{% endif %}
+      </div>
+    </div>
+    <div class="body marked">{{ comment.cleaned_body }}</div>
+  </li>
+  {% endfor %}
+</ul>

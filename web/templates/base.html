@@ -1,17 +1,74 @@
-{% extends 'navbarbase.html' %}
 {% load i18n %}
-{% block navbuttons %}
+{% include 'include/head.html' %}
+  <body>
+    {% block body %}
+    <nav class="navbar navbar-jucy navbar-fixed-top">
+      <div class="container">
+	<div class="navbar-header">
+	  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+	    <span class="sr-only">Toggle navigation</span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	  </button>
+	  <a class="navbar-brand" href="/">
+	    <img src="/_static/img/whiteslice.svg" class="icon" />
+	    <span class="logo">{% trans 'jucy' %}</span>
+	    {% block navbartitle %}
+	    {% endblock %}
+	</div>
+	<div class="collapse navbar-collapse collapse">
+	  <ul class="nav navbar-nav navbar-right">
+	    {% if repository %}
 	    <li class="{% if current == 'ideas' %}active{% endif %}"><a href="/{{ repository }}/ideas/">{% trans 'Ideas' %}</a></li>
+	    {% else %}
+	    <li class="{% if current == 'about' %}active{% endif %}"><a href="/_about/">{% trans 'About' %}</a></li>
+	    {% endif %}
+	    {% if user.is_authenticated %}
 	    <li class="dropdown">
 	      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">
-		You
+		{{ user.username }}
 		<span class="caret"></span>
 	      </a>
 	      <ul class="dropdown-menu" role="menu">
+		<li class="{% if current == 'pick' %}active{% endif %}"><a href="/_pick/">{% trans 'Your repositories' %}</a></li>
+		<li><a href="/_logout/"><i class="flaticon-logout"></i> {% trans 'Logout' %}</a></li>
+		{% if repository %}
 		<li role="presentation" class="divider"></li>
-		<li><a href="/logout/"><i class="flaticon-logout"></i> Logout</a></li>
-		<li role="presentation" class="divider"></li>
-		<li><a href="#contactModal" data-toggle="ajaxmodal"><i class="flaticon-contact"></i> Contact Us</a></li>
+		<li class="{% if current == 'about' %}active{% endif %}"><a href="/_about/">{% trans 'About' %}</a></li>
+		{% endif %}
 	      </ul>
 	    </li>
-{% endblock %}
+	    {% else %}
+	    <li><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}"><i class="flaticon-logout"></i> Log in</a></li>
+	    <li><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}" class="{% if current == 'pick' %}active{% endif %}">
+	        {% trans 'Get Jucy' %}
+	        <img height="20" src="/_static/img/whitejucy.svg" alt="jucy" />
+	      </a>
+	    </li>
+	    {% endif %}
+	    {% block navbuttons %}{% endblock %}
+	  </ul>
+	</div>
+      </div>
+    </nav>
+    {% block stickyfooter %}{% endblock %}
+    <main class="container">
+      {% block content %}
+      {% endblock %}
+    </main>
+    {% block endstickyfooter %}{% endblock %}
+    {% endblock %}
+
+    {% block footer %}
+    {% endblock %}
+
+    {% include 'include/js.html' %}
+    <script>
+      {% if repository %}
+      var repository = '{{ repository }}';
+      {% endif %}
+    </script>
+    {% block js %}{% endblock %}
+  </body>
+</html>

@@ -23,57 +23,66 @@ margin-left: 20px;
 .flaticon-code:before {
 	content: "\e002";
 }
-.flaticon-waffle:before {
+.flaticon-more:before {
 	content: "\e003";
 }
-.flaticon-facebook:before {
+.flaticon-expand:before {
 	content: "\e004";
 }
-.flaticon-github-head:before {
+.flaticon-facebook:before {
 	content: "\e005";
 }
-.flaticon-octocat-stache:before {
+.flaticon-github-head:before {
 	content: "\e006";
 }
-.flaticon-idea:before {
+.flaticon-octocat-stache:before {
 	content: "\e007";
 }
-.flaticon-reject:before {
+.flaticon-heart:before {
 	content: "\e008";
 }
-.flaticon-message:before {
+.flaticon-idea:before {
 	content: "\e009";
 }
-.flaticon-heart:before {
+.flaticon-reject:before {
 	content: "\e00a";
 }
-.flaticon-new:before {
+.flaticon-message:before {
 	content: "\e00b";
 }
-.flaticon-question:before {
+.flaticon-loader:before {
 	content: "\e00c";
 }
-.flaticon-octocat:before {
+.flaticon-new:before {
 	content: "\e00d";
 }
-.flaticon-conversation:before {
+.flaticon-octocat:before {
 	content: "\e00e";
 }
-.flaticon-widget-reverse:before {
+.flaticon-question:before {
 	content: "\e00f";
 }
-.flaticon-widget-icon:before {
+.flaticon-conversation:before {
 	content: "\e010";
 }
-.flaticon-star:before {
+.flaticon-widget-reverse:before {
 	content: "\e011";
 }
-.flaticon-twitter:before {
+.flaticon-widget-icon:before {
 	content: "\e012";
 }
-.flaticon-website:before {
+.flaticon-star:before {
 	content: "\e013";
 }
-.flaticon-widget:before {
+.flaticon-twitter:before {
 	content: "\e014";
+}
+.flaticon-waffle:before {
+	content: "\e015";
+}
+.flaticon-website:before {
+	content: "\e016";
+}
+.flaticon-widget:before {
+	content: "\e017";
 }

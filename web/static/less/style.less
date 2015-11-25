@@ -27,7 +27,7 @@ html, body {
 body {
     font-family: 'Oxygen', sans-serif;
     font-size: 14px;
-    .a-variant(@mainColor);
+    .a-variant(@mainColor, @secondaryColor);
 }
 
 
@@ -40,8 +40,11 @@ body {
 .margin20 { margin: 20px; }
 .margin50 { margin: 50px; }
 
-.fontx2 { font-size: 2em; }
+.fontx0-5 { font-size: 0.5em; }
 .fontx1-5 { font-size: 1.5em; }
+.fontx2 { font-size: 2em; }
+.fontx2-7 { font-size: 2.7em; }
+.fontx4 { font-size: 4em; }
 
 [class^="flaticon-"]:before,
 [class*=" flaticon-"]:before,
@@ -56,7 +59,7 @@ body {
 }
 
 .navbar-jucy {
-    .navbar-variant(@mainColor, #fff);
+    .navbar-variant(@mainColor, #fff, @secondaryColor);
     border-color: @mainColor;
     .icon, .logo {
 	height: 90px;
@@ -131,6 +134,25 @@ main {
     box-shadow: -10px 10px 0px 0px @color;
 }
 
+.marked {
+    table {
+	width: 100%;
+	tr {
+	    border-top: 1px solid #ccc;
+	    td, th {
+		padding: 8px;
+		border: 1px solid #ddd;
+	    }
+	}
+	tr:nth-child(2n) {
+	    background-color: #f8f8f8;
+	}
+	th {
+	    background-color: #eee;
+	}
+    }
+}
+
 .issue {
     margin-top: 30px;
     border: 2px solid @lighterColor;
@@ -140,7 +162,6 @@ main {
     color: #555;
     min-height: 134px;
     .boxshadow(@lighterColor);
-
 
     a.title {
 	display: block;
@@ -156,6 +177,39 @@ main {
 	.body {
 	    display: block;
 	    padding: 20px 0;
+	    img {
+		max-width: 100%;
+	    }
+	}
+    }
+    .messages {
+	ul {
+	    margin: 0;
+	    padding: 0;
+	    text-align: left;
+	    li {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+		border-top: 1px solid #ddd;
+		padding-top: 5px;
+		.top {
+		    .author {
+			img {
+			    width: 30px;
+			    height: 30px;
+			    border-radius: 3px;
+			}
+			.flaticon-github-head {
+			    opacity: 0.8;
+			}
+		    }
+		    .date {
+			font-size: 0.7em;
+			opacity: 0.8;
+		    }
+		}
+	    }
 	}
     }
 
@@ -164,7 +218,6 @@ main {
 	.boxshadow(@slightColor);
 
     }
-
     &:hover,
     &:focus {
 	color: #555;
@@ -176,7 +229,28 @@ main {
 	    .boxshadow(@mainColor);
 	}
     }
-
+    .buttons {
+	a:hover, a:focus {
+	    text-decoration: none;
+	}
+	.flaticon-github-head {
+	    opacity: 0.5;
+	}
+	a {
+	    display: inline-block;
+	    margin: 0 10px;
+	}
+	a[href='#messages'] {
+	    .text {
+		display: inline-block;
+		position: relative;
+		color: white;
+		right: -21px;
+		margin-left: -21px;
+		top: -7px;
+	    }
+	}
+    }
 }
 
 @-webkit-keyframes animate-pulse {
@@ -206,6 +280,9 @@ main {
 	  animation: animate-pulse 1s infinite steps(8);
 }
 
+.flaticon-loader {
+    .animate-pulse;
+}
 
 body#index {
     header {
