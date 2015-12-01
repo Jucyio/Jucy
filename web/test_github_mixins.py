@@ -59,3 +59,53 @@ class GithubMixinTest(unittest.TestCase):
         self.gh.search.issues.get.return_value = 200, search_result
         self.assertEqual(self.client.search_issues(**kwargs), search_result)
         self.gh.search.issues.get.assert_called_with(q=expected_query)
+
+    def testGetIssues(self):
+        repository = 'Jucyio/Jucy'
+        duplicates_query = ' repo:Jucyio/Jucy state:closed label:duplicate'
+        rejected_query = ' repo:Jucyio/Jucy state:closed label:rejected'
+        ready_query = ' repo:Jucyio/Jucy state:open label:ready'
+        done_query = ' repo:Jucyio/Jucy state:closed -labels:rejected,duplicate'
+        new_query = ' repo:Jucyio/Jucy state:open -label:ready'
+        search_result = mock.MagicMock()
+        self.gh.search.issues.get.return_value = 200, search_result
+
+        self.client.get_issues(repository)
+        self.gh.search.issues.get.assert_any_call(q=rejected_query)
+        self.gh.search.issues.get.assert_any_call(q=ready_query)
+        self.gh.search.issues.get.assert_any_call(q=duplicates_query)
+        self.gh.search.issues.get.assert_any_call(q=new_query)
+        self.gh.search.issues.get.assert_any_call(q=done_query)
+
+    def testGetComments(self):
+        owner = 'Jucyio'
+        repo = 'Jucy'
+        issue = 1
+        comments_obj = mock.MagicMock()
+        self.gh.repos[owner][repo].issues[str(issue)].comments.get.return_value = 200, comments_obj
+        self.assertEqual(self.client.get_comments(owner, repo, 1), comments_obj)
+
+    def testCreateHook(self):
+        owner = 'Jucyio'
+        repo = 'Jucy'
+        name = 'web'
+        config = mock.MagicMock()
+        events = mock.MagicMock()
+        hook_obj = mock.MagicMock()
+
+        payload = {'config': config, 'events': events, 'name': name}
+        self.gh.repos[owner][repo].hooks.post.return_value = 201, hook_obj
+        self.assertEqual(self.client.create_hook(owner, repo, name, config, events), hook_obj)
+        self.gh.repos[owner][repo].hooks.post.assert_called_with(body=payload)
+
+    def testCreateLabel(self):
+        owner = 'Jucyio'
+        repo = 'Jucy'
+        name = 'bug'
+        color = 'ffffff'
+        payload = {'name': name, 'color': color}
+        label_obj = mock.MagicMock()
+
+        self.gh.repos[owner][repo].labels.post.return_value = 201, label_obj
+        self.assertEqual(self.client.create_label(owner, repo, name, color), label_obj)
+        self.gh.repos[owner][repo].labels.post.assert_called_with(body=payload)
