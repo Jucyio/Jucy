@@ -50,17 +50,13 @@ class JucyBot(GithubMixin):
     def add_as_collaborator_on_repo(self, owner, repository):
         status_code, data = self.gh.repos[owner][repository].collaborators[self.username].put()
         try:
-            self._wrap_error(204, status_code, data)
+            return self._wrap_error(204, status_code, data)
         except GithubException, exn:
             pass
 
-    def create_issue(self, repo_fullname, title, contents, label_name):
+    def create_issue(self, owner, repository, title, contents, label_name):
         body = self.format_issue(contents, label_name)
-        repo = self.gh.get_repo(repo_fullname)
-        return repo.create_issue(
-            title,
-            body=body,
-            labels=[self.get_label_object(repo, label_name)])
+        return super(Jucybot, self).create_issue(owner, repository, title, body, label_name)
 
     def change_issue_label(self, issue, repository, label_name):
         labels = repository.get_labels()

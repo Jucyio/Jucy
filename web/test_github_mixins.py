@@ -109,3 +109,16 @@ class GithubMixinTest(unittest.TestCase):
         self.gh.repos[owner][repo].labels.post.return_value = 201, label_obj
         self.assertEqual(self.client.create_label(owner, repo, name, color), label_obj)
         self.gh.repos[owner][repo].labels.post.assert_called_with(body=payload)
+
+    def testCreateIssue(self):
+        owner = 'Jucyio'
+        repo = 'Jucy'
+        title = 'Issue'
+        content = 'Hello'
+        labels = mock.MagicMock()
+        issue = mock.MagicMock()
+        payload = {'title': title, 'body': content, 'labels': labels}
+
+        self.gh.repos[owner][repo].issues.post.return_value = 201, issue
+        self.assertEqual(self.client.create_issue(owner, repo, title, content, labels), issue)
+        self.gh.repos[owner][repo].issues.post.assert_called_once_with(body=payload)

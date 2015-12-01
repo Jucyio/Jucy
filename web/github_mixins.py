@@ -206,3 +206,23 @@ class GithubMixin(object):
         payload = {'name': name, 'color': color}
         status_code, data = self.gh.repos[owner][repository].labels.post(body=payload)
         return self._wrap_error(201, status_code, data)
+
+    def create_issue(self, owner, repository, title, content, labels):
+        """ Create an issue
+
+        Github Reference:
+            path: /repos/:owner/:repo/issues
+            method: POST
+            reference: https://developer.github.com/v3/issues/#create-an-issue
+
+        Args:
+            owner (str) : Github username
+            repository (str) : Github repository
+            title (str) : Issue title
+            content (str) : Issue body
+            label : Issue label
+
+        """
+        payload = {'title': title, 'body': content, 'labels': labels}
+        status_code, data = self.gh.repos[owner][repository].issues.post(body=payload)
+        return self._wrap_error(201, status_code, data)
