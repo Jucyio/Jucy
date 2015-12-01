@@ -136,7 +136,6 @@ class GithubMixin(object):
 
         """
 
-        issues = dict()
         duplicates = self.search_issues(repo=full_repository_name, state='closed', label='duplicate')
         rejected = self.search_issues(repo=full_repository_name, state='closed', label='rejected')
         done = self.search_issues(repo=full_repository_name, state='closed', labels='-rejected,duplicate')
@@ -190,7 +189,7 @@ class GithubMixin(object):
         return self._wrap_error(201, status_code, data)
 
     def create_label(self, owner, repository, name, color):
-         """ Create a new label
+        """ Create a new label
 
         Github Reference:
             path: /repos/:owner/:repo/labels
