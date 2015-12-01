@@ -68,7 +68,7 @@ class GithubMixin(object):
             repo (str) : Github repository name
 
         """
-        status_code, data = self.gh.repos.username.repo.get()
+        status_code, data = self.gh.repos[username][repo].get()
         return self._wrap_error(200, status_code, data)
 
     def is_collaborator_on_repo(self, owner, repo):
