@@ -1,5 +1,3 @@
-import github
-
 E_HOOK_ALREADY_EXISTS = u'Hook already exists on this repository'
 
 

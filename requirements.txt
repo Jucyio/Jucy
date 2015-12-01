@@ -1,5 +1,5 @@
 Django==1.7.3
--e git://github.com/Jucyio/PyGithub.git@master#egg=PyGithub
+-e git://github.com/Jucyio/agithub.git@master#egg=agithub
 PyJWT==0.4.1
 argparse==1.2.1
 mock==1.0.1
