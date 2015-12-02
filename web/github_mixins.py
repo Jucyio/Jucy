@@ -245,7 +245,7 @@ class GithubMixin(object):
         status_code, data = self.gh.repos[owner][repository].issues[str(issue)].labels[label].delete()
         return self._wrap_error(204, status_code, data)
 
-    def replace_labels(self, owner, repository, issue, labels)
+    def replace_labels(self, owner, repository, issue, labels):
         """ Replace labels from an issue
 
         Github Reference:
