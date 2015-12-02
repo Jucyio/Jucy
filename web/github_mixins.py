@@ -226,3 +226,39 @@ class GithubMixin(object):
         payload = {'title': title, 'body': content, 'labels': labels}
         status_code, data = self.gh.repos[owner][repository].issues.post(body=payload)
         return self._wrap_error(201, status_code, data)
+
+    def remove_label(self, owner, repository, issue, label):
+        """ Remove a label from an issue
+
+        Github Reference:
+            path: /repos/:owner/:repo/issues/:number/labels/:name
+            method: DELETE
+            reference: https://developer.github.com/v3/issues/labels/#remove-a-label-from-an-issue
+
+        Args:
+            owner (str) : Github username
+            repository (str) : Github repository
+            issue (int) : Issue id
+            label (str) : Label
+
+        """
+        status_code, data = self.gh.repos[owner][repository].issues[str(issue)].labels[label].delete()
+        return self._wrap_error(204, status_code, data)
+
+    def replace_labels(self, owner, repository, issue, labels)
+        """ Replace labels from an issue
+
+        Github Reference:
+            path: /repos/:owner/:repo/issues/:number/labels
+            method: PUT
+            reference: https://developer.github.com/v3/issues/labels/#replace-all-labels-for-an-issue
+
+        Args:
+            owner (str) : Github username
+            repository (str) : Github repository
+            issue (int) : Issue id
+            labels (str list) : Labels
+
+        """
+        status_code, data = self.gh.repos[owner][repository].issues[str(issue)].labels.put(body=labels)
+        return self._wrap_error(200, status_code, data)
