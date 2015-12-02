@@ -243,7 +243,7 @@ class GithubMixin(object):
 
         """
         status_code, data = self.gh.repos[owner][repository].issues[str(issue)].labels[label].delete()
-        return self._wrap_error(204, status_code, data)
+        return self._wrap_error(200, status_code, data)
 
     def replace_labels(self, owner, repository, issue, labels):
         """ Replace labels from an issue
@@ -261,4 +261,39 @@ class GithubMixin(object):
 
         """
         status_code, data = self.gh.repos[owner][repository].issues[str(issue)].labels.put(body=labels)
+        return self._wrap_error(200, status_code, data)
+
+    def get_issue(self, owner, repository, issue):
+        """ get a single issue
+
+        github reference:
+            path: /repos/:owner/:repo/issues/:number
+            method: GET
+            reference: https://developer.github.com/v3/issues/#get-a-single-issue
+
+        args:
+            owner (str) : github username
+            repository (str) : github repository
+            issue (int) : issue id
+
+        """
+        status_code, data = self.gh.repos[owner][repository].issues[str(issue)].get()
+        return self._wrap_error(200, status_code, data)
+
+    def add_labels(self, owner, repository, issue, labels):
+        """ Add labels to an issue
+
+        Github Reference:
+            path: /repos/:owner/:repo/issues/:number/labels
+            method: POST
+            reference: https://developer.github.com/v3/issues/labels/#replace-all-labels-for-an-issue
+
+        Args:
+            owner (str) : Github username
+            repository (str) : Github repository
+            issue (int) : Issue id
+            labels (str list) : Labels
+
+        """
+        status_code, data = self.gh.repos[owner][repository].issues[str(issue)].labels.post(body=labels)
         return self._wrap_error(200, status_code, data)

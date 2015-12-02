@@ -58,16 +58,15 @@ class JucyBot(GithubMixin):
         body = self.format_issue(contents, label_name)
         return super(Jucybot, self).create_issue(owner, repository, title, body, label_name)
 
-    def change_issue_label(self, issue, repository, label_name):
-        labels = repository.get_labels()
-        issue_labels = issue.get_labels()
-        label = next((label for label in labels if label.name == label_name), None)
-        if not label:
-            return
-        for issue_label in issue_labels:
-            if issue_label.name != label_name:
-                issue.remove_from_labels(issue_label)
-        issue.set_labels(label)
+    def change_issue_label(self, owner, repository, issue, old_label, new_label):
+       try:
+           self.remove_label(owner, repository, issue, old_label)
+       except GithubException, e:
+           pass
+       try:
+           self.add_labels(owner, repository, issue, [new_label])
+       except GithubException, e:
+           pass
 
     def format_issue(self, contents, label_name):
         # TODO(db0): Specify the boilerplate content for Jucy issues.
