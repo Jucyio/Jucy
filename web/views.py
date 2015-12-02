@@ -163,53 +163,6 @@ def create_idea(request, owner, repository, full_repository_name):
             pass #FIXME
     return redirect('/%s' % full_repository_name)
 
-def reject_idea(request, owner, repository, full_repository_name, issue_id):
-    '''
-    Reject an idea: close the issue, redirect to the ideas page
-    '''
-    context = global_context(request)
-
-    gh = GithubWrapper(request)
-    repository = gh.repo(full_repository_name)
-    issue_id = int(issue_id)
-    issue = repository.get_issue(issue_id)
-    issue.edit(state="closed", labels=['rejected'])
-
-    prepare_issues_context(context, full_repository_name, repository, 'ideas')
-    return render(request, 'ideas.html', context)
-
-def approve_idea(request, owner, repository, full_repository_name, issue_id):
-    '''
-    Approve an idea: Label the issue as ready
-    '''
-    context = global_context(request)
-
-    gh = GithubWrapper(request)
-    repository = gh.repo(full_repository_name)
-    issue_id = int(issue_id)
-    issue = repository.get_issue(issue_id)
-    labels = repository.get_labels()
-    ready_label = next((label for label in labels if label.name == "ready"), None)
-    issue.set_labels(ready_label)
-
-    prepare_issues_context(context, full_repository_name, repository, 'ideas')
-    return render(request, 'ideas.html', context)
-
-def duplicate_idea(request, owner, repository, full_repository_name, issue_id):
-    '''
-    Mark an idea as duplicate: close the issue, add duplicate label, redirect to the ideas page
-    '''
-    context = global_context(request)
-
-    gh = GithubWrapper(request)
-    repository = gh.repo(full_repository_name)
-    issue_id = int(issue_id)
-    issue = repository.get_issue(issue_id)
-    issue.edit(state="closed", labels=["duplicate"])
-
-    prepare_issues_context(context, full_repository_name, repository, 'ideas')
-    return render(request, 'ideas.html', context)
-
 def get_issue_comments(request, owner, repository, full_repository_name, issue_id):
     '''
     Get the comments of an issue
