@@ -6,7 +6,7 @@ class GithubException(Exception):
         self.status = status_code
 
     def __str__(self):
-        return json.dumps(self.value)
+        return json.dumps(self.data)
 
 class GithubMixin(object):
 
