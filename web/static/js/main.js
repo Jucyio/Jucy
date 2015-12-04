@@ -74,6 +74,26 @@ $(function() {
     });
     $('.marked').each(function() {
 	$(this).html(marked($(this).html()));
+	if ($(this).html() != null)
+	{
+	    var that = this;
+	    $.ajax({
+		contentType: 'application/json',
+		data: JSON.stringify({
+		    "text": $(this).html(),
+		    "mode": "gfm",
+		    "context": repository
+		}),
+		dataType: 'html',
+		success: function(data){
+		    $(that).html(data);
+		},
+		error: function(){
+		},
+		type: 'POST',
+		url: 'https://api.github.com/markdown'
+	    });
+	};
     });
     $('[data-modal-authenticate="true"]').click(function(e) {
 	e.preventDefault();
