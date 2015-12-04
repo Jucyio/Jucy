@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap_form_horizontal',
     'social.apps.django_app.default',
     'web',
 )
@@ -52,6 +53,7 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
     # Do not enable any database-backed
+    'django.contrib.auth.backends.ModelBackend',
     'social.backends.github.GithubOAuth2',
 )
 

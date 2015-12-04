@@ -22,6 +22,10 @@ urlpatterns = patterns('',
     url(r'^_terms[/]+$', views.genericViewWithContext, name='terms'),
     url(r'^_privacy[/]+$', views.genericViewWithContext, name='privacy'),
     url(r'^_logout[/]+$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
+
+
+    url(r'^_ajax/authenticate[/]+$', views.ajax_authenticate, name='ajax_authenticate'),
+
     url(r'^' + github_user_repo_regex + '/$', include(boardurlpatterns)),
     # url(r'^%s$' % (github_user_repo_regex),
     #     views.board, name='board'),

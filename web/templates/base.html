@@ -24,10 +24,9 @@
 	    {% else %}
 	    <li class="{% if current == 'about' %}active{% endif %}"><a href="/_about/">{% trans 'About' %}</a></li>
 	    {% endif %}
-	    {% if user.is_authenticated %}
-	    <li class="dropdown">
+	    <li class="dropdown{% if not user.is_authenticated %} hidden{% endif %}" id="authenticated">
 	      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">
-		{{ user.username }}
+		<span id="authenticated_username">{% if is_connected_github %}{{ user.username }}{% else %}{{ user.email }}{% endif %}</span>
 		<span class="caret"></span>
 	      </a>
 	      <ul class="dropdown-menu" role="menu">
@@ -39,9 +38,9 @@
 		{% endif %}
 	      </ul>
 	    </li>
-	    {% else %}
-	    <li><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}"><i class="flaticon-logout"></i> Log in</a></li>
-	    <li><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}" class="{% if current == 'pick' %}active{% endif %}">
+	    {% if not user.is_authenticated %}
+	    <li class="hidden-when-authenticated"><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}"><i class="flaticon-logout"></i> Log in</a></li>
+	    <li class="hidden-when-authenticated"><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}" class="{% if current == 'pick' %}active{% endif %}">
 	        {% trans 'Get Jucy' %}
 	        <img height="20" src="/_static/img/whitejucy.svg" alt="jucy" />
 	      </a>
@@ -63,11 +62,38 @@
     {% block footer %}
     {% endblock %}
 
+    {% if not user.is_authenticated %}
+    {% include 'include/authenticate_form.html' %}
+    {% endif %}
+
+    <!-- Free Modal -->
+    <div class="modal fade" id="freeModal">
+      <div class="modal-dialog">
+	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	    <h4 class="modal-title"></h4>
+	  </div>
+	  <div class="modal-body"></div>
+	  <div class="modal-footer">
+	    <button type="button" class="btn btn-jucy" data-dismiss="modal">{% trans 'Go' %}</button>
+	  </div>
+	</div>
+      </div>
+    </div>
     {% include 'include/js.html' %}
     <script>
       {% if repository %}
       var repository = '{{ repository }}';
       {% endif %}
+      var authenticated_user = {% if not user.is_authenticated %}null{% else %}{
+        'username': '{{ user.username }}',
+        'email': '{{ user.email }}',
+        'github': {{ is_connected_github|yesno:'true,false' }},
+        {% if repository %}
+        'is_collaborator': {{ is_collaborator|default:False|yesno:'true,false'}},
+        {% endif %}
+      }{% endif %};
     </script>
     {% block js %}{% endblock %}
   </body>

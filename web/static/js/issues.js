@@ -17,4 +17,18 @@ $(document).ready(function() {
 	}
 	return false;
     });
+    $('[href="#like"]').click(function(e) {
+	e.preventDefault();
+	if (authenticated_user == null) {
+	    authenticateForm(function() {
+		console.log('Todo ajax vote');
+		if (authenticated_user['is_collaborator']) {
+		    location.reload();
+		}
+	    });
+	} else {
+	    console.log('Todo ajax vote');
+	}
+	return false;
+    });
 });

@@ -14,9 +14,10 @@
     "css-hexagon": "~0.0.0",
     "jquery-easing": "*",
     "less": "~2.0.0",
-    "navbar-variant": "~0.0.0",
+    "navbar-variant": "https://github.com/db0company/navbar-variant.git#1",
     "emojione": "~1.5.2",
     "typeahead.js": "~0.11.1",
-    "github-wiki": "js-github-wiki#*"
+    "github-wiki": "js-github-wiki#*",
+    "jquery-form": "~3.46.0"
   }
 }

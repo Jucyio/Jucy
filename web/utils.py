@@ -1,3 +1,5 @@
+import string
+import random
 from web import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -11,6 +13,9 @@ def gravatar(email, size=200):
 # an email address. The created users in database have this prefix to differenciate
 # them from user who use their GitHub usernames.
 username_prefix = 'jucyuser_'
+
+def generate_random_username():
+    return username_prefix + random_string(16)
 
 # Commands must be on the first line of a comment.
 # That line must start with @jucybot.
@@ -73,3 +78,13 @@ def comment_command(comment):
         comment.cleaned_body = '\n'.join(lines[1:])
     _comment_author(comment, command)
     return comment
+
+def random_string(length, choice=(string.ascii_letters + string.digits)):
+    return ''.join(random.SystemRandom().choice(choice) for _ in range(length))
+
+def is_connected_github(user):
+    try:
+        user.social_auth.get(provider='github')
+        return True
+    except ObjectDoesNotExist:
+        return False

@@ -8,17 +8,27 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import resolve
 from django.conf import settings
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.forms.util import ErrorList
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+from django.utils.translation import ugettext_lazy as _
 from web.utils import *
 
 #if settings.DEBUG:
 #    github.enable_console_debug_logging()
 
 def global_context(request):
-    return {
+    context = {
         'debug': settings.DEBUG,
         'landing_mode': settings.LANDING_MODE,
         'current': resolve(request.path_info).url_name,
     }
+    if not request.user.is_authenticated():
+        context['authenticate_form'] = forms.EmailForm()
+    else:
+        context['is_connected_github'] = is_connected_github(request.user)
+    return context
 
 class GithubWrapper(object):
     def __init__(self, request):
@@ -268,11 +278,62 @@ def get_issue_comments(request, owner, repository, full_repository_name, issue_i
     return render(request, 'ajax/comments.html', {
         'comments': comments,
     })
-    # comments = {'comments': [{
-    #     'body': comment.body,
-    #     'user': None if not comment.user or comment.user.login == 'jucybot' else {
-    #         'avatar': comment.user.avatar_url,
-    #         'login': comment.user.login,
-    #     },
-    # } for comment in comments]}
-    return JsonResponse(json_comments)
+
+def ajax_authenticate(request):
+    github = None
+    if not request.user.is_authenticated():
+        if request.method != 'POST' or not request.POST or 'email' not in request.POST:
+            raise PermissionDenied()
+        if 'password' in request.POST:
+            form = forms.EmailPasswordForm(request.POST)
+        else:
+            form = forms.EmailForm(request.POST)
+        if not form.is_valid():
+            return render(request, 'include/authenticate_form.html', {
+                'authenticate_form': form,
+            })
+        # User password checked in the form is_valid
+        if form.user:
+            user = form.user
+        else:
+            email = request.POST['email']
+            try: # Does the user exist?
+                user = User.objects.get(email=email)
+                # Does the user need a password to login?
+                if user.has_usable_password():
+                    form_withpassword = forms.EmailPasswordForm(initial={'email': email})
+                    form_withpassword.full_clean()
+                    errors = form_withpassword._errors.setdefault('password', ErrorList())
+                    errors.append(_('This account requires a password.'))
+                    return render(request, 'include/authenticate_form.html', {
+                        'authenticate_form': form_withpassword,
+                    })
+                # If they don't, do they need to login with github?
+                github = is_connected_github(user)
+                if github:
+                    return JsonResponse({'redirect': '/_oauth/login/github'})
+                # Otherwise, they can just log in with just their email \o/
+            except ObjectDoesNotExist:
+                # Create a new user without a password
+                user = User.objects.create(username=generate_random_username(),
+                                           email=email)
+                github = False
+        # Hack to make `login` works without calling authenticate with a password first
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        login(request, user)
+    if github is None:
+        github = is_connected_github(request.user)
+    request.user = user
+    is_collaborator = False
+    # Is the user a collaborator of this repo?
+    if 'repository' in request.GET and github:
+        gh = GithubWrapper(request)
+        repository = gh.repo(request.GET['repository'])
+        if gh.is_collaborator_on_repo(repository):
+            is_collaborator = True
+    return JsonResponse({
+        'username': request.user.username,
+        'email': request.user.email,
+        'github': github if github is not None else is_connected_github(request.user),
+        'is_collaborator': is_collaborator,
+    })

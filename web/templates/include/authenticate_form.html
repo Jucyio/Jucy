@@ -1,0 +1,20 @@
+{% load i18n %}
+    <div id="authenticate_form" class="hidden">
+      <p>{% trans 'Enter your email to start voting and commenting on ideas.' %}</p>
+      <form class="form-horizontal" method="post" role="form" action="/_ajax/authenticate/{% if repository %}?repository={{ repository }}{% endif %}">{% csrf_token %}
+	{% include "bootstrap_form_horizontal.html" with form=authenticate_form wrap=0 %}
+	<div class="form-group">
+	  <div class="col-sm-8 text-right">
+	    <small>
+	      <a href="/_oauth/login/github" class="text-muted">
+		{% trans 'Or connect with GitHub' %}
+		<i class="flaticon-github-head"></i>
+	      </a>
+	    </small>
+	  </div>
+	  <div class="col-sm-4 text-right">
+	    <input type="submit" class="btn btn-jucy" value="{% trans 'Go' %}"/>
+	  </div>
+	</div>
+      </form>
+    </div>
