@@ -35,8 +35,8 @@ def is_valid_command(command):
     return False
 
 def _comment_author(comment, command=None):
-    if comment.user:
-        if comment.user.login == 'JucyBot':
+    if comment['user']:
+        if comment['user']['login'] == 'JucyBot':
             if command and command[0] == 'comment' and len(command) > 1:
                 username = command[1]
                 try:
@@ -44,20 +44,20 @@ def _comment_author(comment, command=None):
                     name = user.get_full_name()
                     if not name:
                         name = user.email.split('@')[0]
-                    comment.author = {
+                    comment['author'] = {
                         'username': name,
                         'avatar': gravatar(user.email),
                     }
                     return
                 except ObjectDoesNotExist: pass
         else:
-            comment.author = {
-                'username': comment.user.name,
-                'github_url': comment.user.html_url,
-                'avatar': comment.user.avatar_url,
+            comment['author'] = {
+                'username': comment['user']['login'],
+                'github_url': comment['user']['html_url'],
+                'avatar': comment['user']['avatar_url'],
             }
             return
-    comment.author = {
+    comment['author'] = {
         'username': 'Unknown',
         'avatar': settings.DEFAULT_AVATAR,
     }
@@ -68,14 +68,14 @@ def comment_command(comment):
     Returns a pair that contains the command (or None) and the modified comment.
     The returned comment will contain the right author information and a cleaned body.
     """
-    comment.cleaned_body = comment.body.strip()
+    comment['cleaned_body'] = comment['body'].strip()
     command = None
-    if comment.cleaned_body.startswith('@jucybot'):
-        lines = comment.cleaned_body.splitlines()
+    if comment['cleaned_body'].startswith('@jucybot'):
+        lines = comment['cleaned_body'].splitlines()
         command = lines[0].split()[1:]
         if not command or not is_valid_command(command):
             command = ['comment']
-        comment.cleaned_body = '\n'.join(lines[1:])
+        comment['cleaned_body'] = '\n'.join(lines[1:])
     _comment_author(comment, command)
     return comment
 

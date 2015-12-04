@@ -1,6 +1,6 @@
 import copy
 import github_helpers
-from github import GithubException
+from github_mixins import GithubException
 import unittest
 
 class isGithubExceptionMessageTest(unittest.TestCase):

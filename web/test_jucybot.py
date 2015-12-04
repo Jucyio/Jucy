@@ -1,10 +1,9 @@
-import github
 import jucybot
 import unittest
 import mock
+
 from django.test.utils import override_settings
 from django.test import TestCase
-
 
 class JucyBotTest(unittest.TestCase):
     def setUp(self):
@@ -21,52 +20,14 @@ Category: feedback
                          self.jb.format_issue('This website is great!',
                                              'feedback'))
 
-    def testCreateIssue(self):
-        repo_obj = mock.MagicMock()
-        label_obj = mock.MagicMock()
-        repo_obj.get_label.return_value = label_obj
-        self.gh.get_repo.return_value = repo_obj
-
-        title = 'Test issue'
-        contents = 'This website is great!'
-        self.jb.create_issue('Jucyio/playground', title, contents, 'feedback')
-
-        self.gh.get_repo.assert_called_with('Jucyio/playground')
-        repo_obj.get_label.assert_called_with('feedback')
-        repo_obj.create_issue.assert_called_with(title,
-                                                 body=mock.ANY,
-                                                 labels=[label_obj])
-
-    def testIsCollaboratorOnRepo(self):
-        repo = mock.MagicMock()
-        repo.has_in_collaborators.return_value = True
-        self.assertTrue(self.jb.is_collaborator_on_repo(repo))
-        repo.has_in_collaborators.assert_called_once_with('testJucyBot')
-        repo = mock.MagicMock()
-        repo.has_in_collaborators.return_value = False
-        self.assertFalse(self.jb.is_collaborator_on_repo(repo))
-        repo.has_in_collaborators.assert_called_once_with('testJucyBot')
-
     def testAddAsCollaboratorOnRepo(self):
-        repo = mock.MagicMock()
-        self.jb.add_as_collaborator_on_repo(repo)
-        repo.add_to_collaborators.assert_called_once_with('testJucyBot')
+        repo = 'Jucy'
+        owner = 'Jucyio'
+        obj = mock.MagicMock()
+        self.gh.repos[owner][repo].collaborators[self.jb.username].put.return_value = 204, obj
+        self.assertEqual(self.jb.add_as_collaborator_on_repo(owner, repo), obj)
+        self.gh.repos[owner][repo].collaborators[self.jb.username].put.assert_called_once_with()
 
-    def testChangeIssueLabel(self):
-        repo = mock.MagicMock()
-        label1 = mock.MagicMock()
-        label1.name = 'label1'
-        label2 = mock.MagicMock()
-        label2.name = 'label2'
-        label3 = mock.MagicMock()
-        label3.name = 'label3'
-        issue = mock.MagicMock()
-        issue.get_labels.return_value = [label1, label2]
-        repo.get_labels.return_value = [label1, label2, label3]
-
-        self.jb.change_issue_label(issue, repo, 'label3')
-        issue.remove_from_labels.assert_has_calls([mock.call(label1), mock.call(label2)])
-        issue.set_labels.assert_called_once_with(label3)
 
 @override_settings(PER_REPO_WEBHOOK_KEY='testkey1')
 class PerRepoSecretTest(TestCase):

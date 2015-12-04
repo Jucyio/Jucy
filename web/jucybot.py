@@ -1,5 +1,5 @@
-import github
-import github_helpers
+from agithub import Github
+from github_mixins import GithubMixin, GithubException
 import hmac
 import textwrap
 from django.conf import settings
@@ -15,71 +15,58 @@ def get_secret_for_repo(repo):
     return h.hexdigest()
 
 
-class JucyBot(object):
+class JucyBot(GithubMixin):
     '''
     Module allowing to control the Jucybot account
     '''
     def __init__(self, gh, login):
         self.gh = gh
         self.login = login
+        self.username = login
         self.label_objects = {}
 
-    def get_webhooks_callback_url_for_repo(self, repo):
+    def get_webhooks_callback_url_for_repo(self, owner, repository):
         return settings.WEBHOOKS_CALLBACK_URL % {
-            'owner': repo.owner.login,
-            'repository': repo.name,
+            'owner': owner,
+            'repository': repository,
             'hooktype': 'all_issues'
         }
 
-    def setup_hooks_on_repo(self, repo):
+
+    def setup_hooks_on_repo(self, owner, repository, gh):
         config = {
-            'url': self.get_webhooks_callback_url_for_repo(repo),
-            'secret': get_secret_for_repo(repo.full_name),
+            'url': self.get_webhooks_callback_url_for_repo(owner, repository),
+            'secret': get_secret_for_repo('{}/{}'.format(owner, repository)),
             'content_type': 'json',
             'secure_ssl': '1' if settings.DEBUG else '0',
         }
         try:
-            hook = repo.create_hook('web', config,
+            hook = gh.create_hook(owner, repository, 'web', config=config,
                                     events=['issues', 'issue_comment'])
             return True
-        except github.GithubException, e:
-            if github_helpers.is_github_exception_message(
-                    e, github_helpers.E_HOOK_ALREADY_EXISTS):
-                return True
+        except GithubException, e:
             raise e
 
-    def is_collaborator_on_repo(self, repo):
-        return repo.has_in_collaborators(self.login)
+    def add_as_collaborator_on_repo(self, owner, repository):
+        status_code, data = self.gh.repos[owner][repository].collaborators[self.username].put()
+        try:
+            return self._wrap_error(204, status_code, data)
+        except GithubException, exn:
+            pass
 
-    def add_as_collaborator_on_repo(self, repo):
-        repo.add_to_collaborators(self.login)
-
-    def get_label_object(self, repo, label_name):
-        key = (repo.full_name, label_name)
-        if key in self.label_objects:
-            return self.label_objects[key]
-        label = repo.get_label(label_name)
-        self.label_objects[key] = label
-        return label
-
-    def create_issue(self, repo_fullname, title, contents, label_name):
+    def create_issue(self, owner, repository, title, contents, label_name):
         body = self.format_issue(contents, label_name)
-        repo = self.gh.get_repo(repo_fullname)
-        return repo.create_issue(
-            title,
-            body=body,
-            labels=[self.get_label_object(repo, label_name)])
+        return super(Jucybot, self).create_issue(owner, repository, title, body, label_name)
 
-    def change_issue_label(self, issue, repository, label_name):
-        labels = repository.get_labels()
-        issue_labels = issue.get_labels()
-        label = next((label for label in labels if label.name == label_name), None)
-        if not label:
-            return
-        for issue_label in issue_labels:
-            if issue_label.name != label_name:
-                issue.remove_from_labels(issue_label)
-        issue.set_labels(label)
+    def change_issue_label(self, owner, repository, issue, old_label, new_label):
+       try:
+           self.remove_label(owner, repository, issue, old_label)
+       except GithubException, e:
+           pass
+       try:
+           self.add_labels(owner, repository, issue, [new_label])
+       except GithubException, e:
+           pass
 
     def format_issue(self, contents, label_name):
         # TODO(db0): Specify the boilerplate content for Jucy issues.
@@ -96,9 +83,6 @@ Category: %(label_name)s
             'contents_as_quote': contents_as_quote,
         }
 
-    def get_repos(self):
-        return self.gh.get_user().get_repos()
-
 def from_github_client(gh, login=settings.JUCY_BOT_LOGIN):
     """Initializes a JucyBot instance from a Github object.
 
@@ -113,5 +97,5 @@ def from_config(login=settings.JUCY_BOT_LOGIN):
     """Initializes a JucyBot instance from the OAuth token in settings.py."""
     token = settings.JUCY_BOT_OAUTH_TOKEN
     assert token, 'JucyBot needs an OAuth token to operate.'
-    gh = github.Github(token)
+    gh = Github(token=token)
     return JucyBot(gh, login)
