@@ -237,8 +237,7 @@ def ajax_authenticate(request):
     # Is the user a collaborator of this repo?
     if 'repository' in request.GET and github:
         gh = GithubWrapper(request)
-        repository = gh.repo(request.GET['repository'])
-        if gh.is_collaborator_on_repo(repository):
+        if gh.is_collaborator_on_repo(*request.GET['repository'].split('/', 1)):
             is_collaborator = True
     return JsonResponse({
         'username': request.user.username,
