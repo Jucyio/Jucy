@@ -33,7 +33,7 @@ class JucyBot(GithubMixin):
         }
 
 
-    def setup_hooks_on_repo(self, owner, repository, gh):
+    def setup_hooks_on_repo(self, owner, repository):
         config = {
             'url': self.get_webhooks_callback_url_for_repo(owner, repository),
             'secret': get_secret_for_repo('{}/{}'.format(owner, repository)),
@@ -41,18 +41,11 @@ class JucyBot(GithubMixin):
             'secure_ssl': '1' if settings.DEBUG else '0',
         }
         try:
-            hook = gh.create_hook(owner, repository, 'web', config=config,
+            hook = self.create_hook(owner, repository, 'web', config=config,
                                     events=['issues', 'issue_comment'])
             return True
         except GithubException, e:
             raise e
-
-    def add_as_collaborator_on_repo(self, owner, repository):
-        status_code, data = self.gh.repos[owner][repository].collaborators[self.username].put()
-        try:
-            return self._wrap_error(204, status_code, data)
-        except GithubException, exn:
-            pass
 
     def create_issue(self, owner, repository, title, contents, label_name):
         body = self.format_issue(contents, label_name)

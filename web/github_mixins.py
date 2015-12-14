@@ -297,3 +297,10 @@ class GithubMixin(object):
         """
         status_code, data = self.gh.repos[owner][repository].issues[str(issue)].labels.post(body=labels)
         return self._wrap_error(200, status_code, data)
+
+    def add_as_collaborator_on_repo(self, owner, repository, username):
+        status_code, data = self.gh.repos[owner][repository].collaborators[username].put()
+        try:
+            return self._wrap_error(204, status_code, data)
+        except GithubException, exn:
+            pass

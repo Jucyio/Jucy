@@ -122,3 +122,12 @@ class GithubMixinTest(unittest.TestCase):
         self.gh.repos[owner][repo].issues.post.return_value = 201, issue
         self.assertEqual(self.client.create_issue(owner, repo, title, content, labels), issue)
         self.gh.repos[owner][repo].issues.post.assert_called_once_with(body=payload)
+
+    def testAddAsCollaboratorOnRepo(self):
+        repo = 'Jucy'
+        owner = 'Jucyio'
+        username = 'toto'
+        obj = mock.MagicMock()
+        self.gh.repos[owner][repo].collaborators[username].put.return_value = 204, obj
+        self.assertEqual(self.client.add_as_collaborator_on_repo(owner, repo, username), obj)
+        self.gh.repos[owner][repo].collaborators[username].put.assert_called_once_with()

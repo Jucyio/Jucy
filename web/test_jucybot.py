@@ -20,14 +20,6 @@ Category: feedback
                          self.jb.format_issue('This website is great!',
                                              'feedback'))
 
-    def testAddAsCollaboratorOnRepo(self):
-        repo = 'Jucy'
-        owner = 'Jucyio'
-        obj = mock.MagicMock()
-        self.gh.repos[owner][repo].collaborators[self.jb.username].put.return_value = 204, obj
-        self.assertEqual(self.jb.add_as_collaborator_on_repo(owner, repo), obj)
-        self.gh.repos[owner][repo].collaborators[self.jb.username].put.assert_called_once_with()
-
 
 @override_settings(PER_REPO_WEBHOOK_KEY='testkey1')
 class PerRepoSecretTest(TestCase):
