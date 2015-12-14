@@ -125,9 +125,9 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     return redirect('/%s' % full_repository_name)
 
 
-def prepare_issues_context(context, jb, full_repository_name, repository, current_view):
+def prepare_issues_context(context, jb, full_repository_name, repository, current_view, issues_to_get):
     try:
-        jb.get_issues(full_repository_name, context=context)
+        jb.get_issues(full_repository_name, context=context, issues_to_get=issues_to_get)
     except GithubException, exn:
         pass #FIXME
     context['repository'] = full_repository_name
@@ -143,11 +143,7 @@ def ideas(request, owner, repository, full_repository_name):
         if gh.is_collaborator_on_repo(owner, repository):
             context['is_collaborator'] = True
 
-    prepare_issues_context(context, jb, full_repository_name, repository, 'ideas')
-    if context['is_collaborator']:
-        context['issues'] = context['new']['items'] + context['ready']['items']
-    else:
-        context['issues'] = context['ready']['items']
+    prepare_issues_context(context, jb, full_repository_name, repository, 'ideas', issues_to_get=['new', 'ready'])
 
     context['request'] = request
     context['full_repository_name'] = full_repository_name

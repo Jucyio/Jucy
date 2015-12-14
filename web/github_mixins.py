@@ -1,5 +1,13 @@
 import json
 
+kwargs_issues_filters = {
+    'duplicates': { 'state': 'closed', 'label': 'duplicate' },
+    'rejected': { 'state': 'closed', 'label': 'rejected' },
+    'done': { 'state': 'closed', 'labels': '-rejected,duplicate' },
+    'ready': { 'state': 'open', 'label': 'ready' },
+    'new': { 'state': 'open', 'label': '-ready' },
+}
+
 class GithubException(Exception):
     def __init__(self, status_code, data):
         self.data = data
@@ -116,12 +124,13 @@ class GithubMixin(object):
         status_code, data = self.gh.search.issues.get(q=q)
         return self._wrap_error(200, status_code, data)
 
-    def get_issues(self, full_repository_name, context=None):
+    def get_issues(self, full_repository_name, issues_to_get=['ready'], context=None):
         """ Return issues for the given repository.
 
         Args:
             full_repository_name (str) :  Github repository full name
-            context (dict) : A dictionnary that will be updated with the issues retrieved.
+            issues_to_get (array of str) : Type of issues to get (see list below)
+            context (dict) : A dictionnary that will be updated with the issues retrieved
 
         It will split the result in a dictionnary, according to the following principles:
 
@@ -131,25 +140,24 @@ class GithubMixin(object):
         - If an issue is open, with a ready label set: 'ready'
         - If an issue is open without the ready label: 'new'
 
-        If a context object is given, it will populate it, else it will return a n-uple:
-        (new, ready, duplicated, done, rejected)
+        If a context object is given, it will populate it, else it will return a dictionary
 
         """
 
-        duplicates = self.search_issues(repo=full_repository_name, state='closed', label='duplicate')
-        rejected = self.search_issues(repo=full_repository_name, state='closed', label='rejected')
-        done = self.search_issues(repo=full_repository_name, state='closed', labels='-rejected,duplicate')
-        ready = self.search_issues(repo=full_repository_name, state='open', label='ready')
-        new = self.search_issues(repo=full_repository_name, state='open', label='-ready')
+        if not context:
+            context = {}
+        context['issues'] = []
+        for issue_type in issues_to_get:
+            try:
+                issues = self.search_issues(repo=full_repository_name, **kwargs_issues_filters[issue_type])
+            except KeyError:
+                continue
+            for issue in issues['items']:
+                issue['type'] = issue_type
+            context[issue_type] = issues
+            context['issues'] += issues['items']
 
-        if context:
-            context['new'] = new
-            context['ready'] = ready
-            context['duplicates'] = duplicates
-            context['done'] = done
-            context['rejected'] = rejected
-        else:
-            return (new, ready, duplicates, done, rejected)
+        return context
 
     def get_comments(self, owner, repository, issue):
         """ Return comments for a given issue

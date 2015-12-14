@@ -27,8 +27,8 @@
 {% block js %}
 <script>
   var repositories = [
-  {% for r in repos %}
-  '{{r}}',
+  {% for repository in repositories %}
+  '{{ repository }}',
   {% endfor %}
   ];
 </script>

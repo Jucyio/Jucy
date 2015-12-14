@@ -33,6 +33,14 @@
 	  </div>
 	</div> <!-- messages -->
 	{% endif %}
+      {% if is_collaborator and issue.labels %}
+      <div class="labels text-right">
+	{% for label in issue.labels %}
+	<span class="label label-default" style="background-color: #{{ label.color }};">{{ label.name }}</span>
+	{% endfor %}
+	<br>
+      </div>
+      {% endif %}
       </div> <!-- details -->
       <div class="buttons text-right">
 	{% if is_collaborator %}
@@ -44,7 +52,7 @@
 	<a href="#messages"><span class="text">{{ issue.comments }}</span> <i class="flaticon-conversation fontx2"></i></a>
 	{% endif %}
 	{% if user.is_authenticated %}
-	{% if issue.jucy_status == 'new' %}
+	{% if issue.type == 'new' %}
 	<a href="#details{{ issue.id }}" data-toggle="collapse"><i class="flaticon-new fontx2-7"></i></a>
 	{% endif %}
 	{% endif %}
