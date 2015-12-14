@@ -55,20 +55,20 @@ def pick(request):
     if settings.LANDING_MODE:
         return redirect('/_mailing')
     if 'repository' in request.POST:
-        return redirect('/' + request.POST['repository'])
+        return redirect('/' + request.POST['repository'] + '/setup')
     if not request.user.is_authenticated and request.user.is_anonymous():
         return login_error
 
     context = global_context(request)
     jb = jucybot.from_config()
     gh = GithubWrapper(request)
-    user_repos = gh.get_repos(visibility='all')
+    user_repos = gh.get_repos()
     jucy_repos = jb.get_repos()
 
     jucy_set = set(repo['full_name'] for repo in jucy_repos)
     user_set = set(repo['full_name'] for repo in user_repos)
-    print user_set
-    context['repos'] = list(user_set & jucy_set)
+    context['boards'] = list(user_set & jucy_set)
+    context['repositories'] = list(user_set - jucy_set)
     return render(request, 'pick.html', context)
 
 def issue(request, full_repository_name, issue_id):
@@ -102,6 +102,8 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
       302 to the board for that repo.
 
     """
+    if not request.user.is_authenticated():
+        return redirect('/_oauth/login/github')
     gh = GithubWrapper(request)
 
     # Step 1 : Create all the jucy labels
