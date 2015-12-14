@@ -116,13 +116,13 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
                 raise exn
 
     # Step 2: grant JucyBot access to the repository
-
-    gh.add_as_collaborator_on_repo(owner, repository)
-
-    # Step 3: setup webhooks to get notifications on all issue changes
     jb = jucybot.from_config()
 
-    jb.setup_hooks_on_repo(owner, repository)
+    gh.add_as_collaborator_on_repo(owner, repository, jb.username)
+
+    # Step 3: setup webhooks to get notifications on all issue changes
+
+    jb.setup_hooks_on_repo(owner, repository, gh)
 
     # Step 4: create a Repo object and save it
     repo_model, _ =  models.Repo.objects.get_or_create(name=repository, owner=owner)
