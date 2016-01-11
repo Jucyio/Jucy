@@ -39,7 +39,7 @@
 	      </ul>
 	    </li>
 	    {% if not user.is_authenticated %}
-	    <li class="hidden-when-authenticated"><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}"><i class="flaticon-logout"></i> Log in</a></li>
+	    <li class="hidden-when-authenticated"><a href="{% if landing_mode %}/_mailing/{% else %}#{% endif %}"{% if not landing_mode %} data-modal-authenticate="true"{% endif %}><i class="flaticon-logout"></i> Log in</a></li>
 	    <li class="hidden-when-authenticated"><a href="{% if landing_mode %}/_mailing/{% else %}/_oauth/login/github{% endif %}" class="{% if current == 'pick' %}active{% endif %}">
 	        {% trans 'Get Jucy' %}
 	        <img height="20" src="/_static/img/whitejucy.svg" alt="jucy" />
