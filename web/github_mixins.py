@@ -3,7 +3,7 @@ import json
 kwargs_issues_filters = {
     'duplicates': { 'state': 'closed', 'label': 'duplicate' },
     'rejected': { 'state': 'closed', 'label': 'rejected' },
-    'done': { 'state': 'closed', 'labels': '-rejected,duplicate' },
+    'done': { 'state': 'closed', 'label': '-rejected,duplicate' },
     'ready': { 'state': 'open', 'label': 'ready' },
     'new': { 'state': 'open', 'label': '-ready' },
 }
@@ -117,10 +117,16 @@ class GithubMixin(object):
         """
         q = ''
         for key, value in kwargs.iteritems():
-            if value.startswith('-'):
-                q += ' -{}:{}'.format(key, value[1:])
+            remove = value.startswith('-')
+            if remove:
+                value = value[1:]
+            if ',' in value:
+                values = value.split(',')
             else:
-                q += ' {}:{}'.format(key, value)
+                values = [value]
+            for value in values:
+                q += ' ' + ('-' if remove else '') + '{}:{}'.format(key, value)
+        print q
         status_code, data = self.gh.search.issues.get(q=q)
         return self._wrap_error(200, status_code, data)
 

@@ -8,6 +8,14 @@
 
 {% block content %}
 {% load tools %}
+{% if not issues %}
+<div class="jucy-alert">
+  {% trans 'Nothing to see here.' %}
+  {% if is_collaborator %}
+  <br>{% trans 'Try to change the filters to see more.' %}
+  {% endif %}
+</div>
+{% else %}
 <div class="row">
   {% for issue in issues %}
   {% if forloop.counter0|mod:3 %}
@@ -61,5 +69,5 @@
   </div> <!-- col -->
   {% endfor %}
 </div> <!-- row -->
-
+{% endif %}
 {% endblock %}
