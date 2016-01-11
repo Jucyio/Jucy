@@ -1,5 +1,5 @@
 from agithub import Github
-from github_mixins import GithubMixin, GithubException
+from github_mixins import GithubMixin, GithubException, kwargs_issues_filters
 import github_helpers
 import jucybot
 import forms
@@ -148,7 +148,9 @@ def ideas(request, owner, repository, full_repository_name):
         if gh.is_collaborator_on_repo(owner, repository):
             context['is_collaborator'] = True
 
-    prepare_issues_context(context, jb, full_repository_name, repository, 'ideas', issues_to_get=['new', 'ready'])
+    if context['is_collaborator'] and 'tab' in request.GET and request.GET['tab'] in kwargs_issues_filters:
+        context['tab'] = request.GET.getlist('tab')
+    prepare_issues_context(context, jb, full_repository_name, repository, 'ideas', issues_to_get=context['tab'] if 'tab' in context else (['new'] if context['is_collaborator'] else ['ready', 'new']))
 
     context['request'] = request
     context['full_repository_name'] = full_repository_name

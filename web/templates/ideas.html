@@ -8,6 +8,17 @@
 
 {% block content %}
 {% load tools %}
+{% if is_collaborator %}
+<div class="text-right filters">
+  <ul class="nav nav-tabs navbar-right">
+    <li{% if not tab %} class="active"{% endif %}><a href=".">{% trans 'New' %}</a></li>
+    <li{% if 'ready' in tab %} class="active"{% endif %}><a href="?tab=ready"><span class="text-info">{% trans 'Ready' %}</span></a></li>
+    <li{% if 'done' in tab %} class="active"{% endif %}><a href="?tab=done"><span class="text-success">{% trans 'Done' %}</span></a></li>
+    <li{% if 'rejected' in tab %} class="active"{% endif %}><a href="?tab=rejected"><span class="text-danger">{% trans 'Rejected' %}</span></a></li>
+    <li{% if 'duplicates' in tab %} class="active"{% endif %}><a href="?tab=duplicates"><span class="text-muted">{% trans 'Duplicate' %}</span></a></li>
+  </ul>
+</div>
+{% endif %}
 {% if not issues %}
 <div class="jucy-alert">
   {% trans 'Nothing to see here.' %}
