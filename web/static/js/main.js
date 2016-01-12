@@ -61,6 +61,7 @@ function authenticateForm(cb) {
 }
 
 $(function() {
+    $("[data-toggle='tooltip']").tooltip();
     $('a.page-scroll').bind('click', function(e) {
 	var $anchor = $(this);
 	$('html, body').stop().animate({

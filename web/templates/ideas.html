@@ -64,6 +64,11 @@
       <div class="buttons text-right">
 	{% if is_collaborator %}
 	<a href="{{ issue.html_url }}" target="_blank"><i class="flaticon-github-head fontx2"></i></a>
+	{% if issue.assignee %}
+	<a href="{{ issue.assignee.html_url }}" class="" target="_blank">
+	  <img src="{{ issue.assignee.avatar_url }}" alt="{{ issue.assignee.avatar_url }}" data-toggle="tooltip" data-placement="top" title="{{ issue.assignee.login }}">
+	</a>
+	{% endif %}
 	{% else %}
 	<a href="#like"><i class="flaticon-heart fontx2"></i></a>
 	{% endif %}
