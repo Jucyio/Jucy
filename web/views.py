@@ -33,7 +33,7 @@ def global_context(request):
 
 class GithubWrapper(GithubMixin):
     def __init__(self, request):
-        if request.user.is_authenticated and not request.user.is_anonymous():
+        if request.user.is_authenticated():
             self.username = request.user.username
             self.gh = Github(token=request.user.social_auth.get().access_token)
         else:
@@ -56,7 +56,7 @@ def pick(request):
         return redirect('/_mailing')
     if 'repository' in request.POST:
         return redirect('/' + request.POST['repository'] + '/setup')
-    if not request.user.is_authenticated and request.user.is_anonymous():
+    if not request.user.is_authenticated():
         return login_error
 
     context = global_context(request)
