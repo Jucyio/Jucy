@@ -18,3 +18,32 @@
 	}
     }
 }
+
+.boxshadow(@color) {
+    -webkit-box-shadow: -10px 10px 0px 0px @color;
+    -moz-box-shadow: -10px 10px 0px 0px @color;
+    box-shadow: -10px 10px 0px 0px @color;
+}
+
+
+@-webkit-keyframes animate-pulse {
+  0% {
+    -webkit-transform: rotate(0deg);
+	    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+	    transform: rotate(359deg);
+  }
+}
+
+@keyframes animate-pulse {
+  0% {
+    -webkit-transform: rotate(0deg);
+	    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+	    transform: rotate(359deg);
+  }
+}
