@@ -65,8 +65,8 @@ def pick(request):
     user_repos = gh.get_repos()
     jucy_repos = jb.get_repos()
 
-    jucy_set = set(repo['full_name'] for repo in jucy_repos)
-    user_set = set(repo['full_name'] for repo in user_repos)
+    jucy_set = set((repo['owner']['login'], repo['name']) for repo in jucy_repos)
+    user_set = set((repo['owner']['login'], repo['name']) for repo in user_repos)
     context['boards'] = list(user_set & jucy_set)
     context['repositories'] = list(user_set - jucy_set)
     return render(request, 'pick.html', context)

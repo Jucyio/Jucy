@@ -5,9 +5,14 @@
 {% if boards %}
 <h1>{% trans 'Your jucy dashboards' %}</h1>
 
-{% for board in boards %}
-<a href="/{{ board }}" target="_blank" class="btn btn-jucy btn-lg">{{ board }}</a>
-{% endfor %}
+<div class="existing">
+  {% for board in boards %}
+  <a href="/{{ board.0 }}/{{ board.1 }}/" target="_blank" class="inline-block">
+    <span class="username text-muted">{{ board.0 }}</span><br>
+    <span class="repository">{{ board.1 }}</span>
+  </a>
+  {% endfor %}
+</div>
 
 <hr class="margin50">
 
@@ -28,7 +33,7 @@
 <script>
   var repositories = [
   {% for repository in repositories %}
-  '{{ repository }}',
+  '{{ repository.0 }}/{{ repository.1 }}',
   {% endfor %}
   ];
 </script>
