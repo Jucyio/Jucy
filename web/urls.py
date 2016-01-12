@@ -9,8 +9,9 @@ github_issue_id = r'(?P<issue_id>[0-9]+)'
 
 boardurlpatterns = patterns('',
     url(r'^$', views.ideas, name='ideas'),
-    url(r'^questions$', views.questions, name='questions'),
-    url(r'^_setupjucy$', views.prepare_repo_for_jucy, name='setupjucy'),
+    url(r'^ideas[/]+$', views.ideas, name='ideas'),
+    url(r'^questions[/]+$', views.questions, name='questions'),
+    url(r'^setup$', views.prepare_repo_for_jucy, name='setupjucy'),
 )
 
 urlpatterns = patterns('',
@@ -26,13 +27,14 @@ urlpatterns = patterns('',
 
     url(r'^_ajax/authenticate[/]+$', views.ajax_authenticate, name='ajax_authenticate'),
 
-    url(r'^' + github_user_repo_regex + '/$', include(boardurlpatterns)),
+    url(r'^' + github_user_repo_regex + '/', include(boardurlpatterns)),
+
     # url(r'^%s$' % (github_user_repo_regex),
     #     views.board, name='board'),
-    url(r'^%s/%s$' % (github_user_repo_regex, github_issue_id),
-        views.issue, name='issue'),
-    url(r'^%s/setup$' % (github_user_repo_regex),
-        views.prepare_repo_for_jucy, name='setupjucy'),
+
+    # url(r'^%s/%s$' % (github_user_repo_regex, github_issue_id),
+    #     views.issue, name='issue'),
+
     # url(r'^%s/_ajax/createidea$' % (github_user_repo_regex),
     #     views.create_idea, name='createidea'),
     # url(r'^%s/_webhooks/all_issues' % (github_user_repo_regex),
