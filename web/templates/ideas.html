@@ -33,7 +33,7 @@
 </div><div class="row">
   {% endif %}
   <div class="col-md-4">
-    <div class="issue {{ issue.state }} {% for label in issue.labels %}github-label-{{ label.name }} {% endfor %}" id="issue{{ issue.id }}" data-issue-number="{{ issue.number }}">
+    <div class="issue {{ issue.state }} {% for label in issue.labels %}github-label-{{ label.name.split|join:"-" }} {% endfor %}" id="issue{{ issue.id }}" data-issue-number="{{ issue.number }}">
       <a href="#details{{ issue.id }}" data-toggle="collapse" class="title">
 	{{ issue.title }}
 	{% if issue.body %}
