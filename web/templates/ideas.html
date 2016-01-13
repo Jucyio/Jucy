@@ -52,6 +52,21 @@
 	  </div>
 	</div> <!-- messages -->
 	{% endif %}
+	<div class="actions">
+	  <br>
+	  <div class="row">
+	    <div class="col-md-4">
+	      <a class="btn btn-success btn-block" href="#ready">{% trans 'Accept' %}</a>
+	    </div>
+	    <div class="col-md-4">
+	      <a class="btn btn-danger btn-block" href="#reject">{% trans 'Reject' %}</a>
+	    </div>
+	    <div class="col-md-4">
+	      <a class="btn btn-default btn-block" href="#duplicate">{% trans 'Duplicate' %}</a>
+	    </div>
+	  </div>
+	  <br>
+	</div> <!-- actions -->
       {% if is_collaborator and issue.labels %}
       <div class="labels text-right">
 	{% for label in issue.labels %}
