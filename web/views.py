@@ -62,9 +62,9 @@ def pick(request):
     context = global_context(request)
     jb = jucybot.from_config()
     gh = GithubWrapper(request)
-    user_repos = gh.get_repos()
-    jucy_repos = jb.get_repos()
 
+    user_repos = gh.get_paginated_repos()
+    jucy_repos = jb.get_paginated_repos()
     jucy_set = set((repo['owner']['login'], repo['name']) for repo in jucy_repos)
     user_set = set((repo['owner']['login'], repo['name']) for repo in user_repos)
     context['boards'] = list(user_set & jucy_set)

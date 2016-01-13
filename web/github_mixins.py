@@ -1,4 +1,5 @@
 import json
+import urlparse
 
 kwargs_issues_filters = {
     'duplicates': { 'state': 'closed', 'label': 'duplicate' },
@@ -47,6 +48,25 @@ class GithubMixin(object):
         """
         status_code, data = self.gh.user.repos.get(*args, **kwargs)
         return self._wrap_error(200, status_code, data)
+
+    def get_paginated_repos(self, pagesize=200):
+        data = self.get_repos(per_page=pagesize)
+        headers = dict(self.gh.getheaders())
+        last_page = None
+        if 'link' in headers:
+            links = headers['link'].split(',')
+            for link in links:
+                content = link.strip().split('; ')
+                if content[1].strip() == 'rel="last"':
+                    addr = content[0][1:-1]
+                    query = urlparse.parse_qs(urlparse.urlparse(addr).query)
+                    last_page = query['page'][0]
+        if last_page is not None:
+            for page in range(2, int(last_page) + 1):
+                print page
+                data = data + self.get_repos(per_page=pagesize, page=page)
+        return data
+
 
     def get_user_repos(self, username):
         """ Return all repositories available to the specified user
