@@ -209,6 +209,7 @@ def get_issue_comments(request, owner, repository, full_repository_name, issue_i
 
 def ajax_authenticate(request):
     github = None
+    jb = jucybot.from_config()
     if not request.user.is_authenticated():
         if request.method != 'POST' or not request.POST or 'email' not in request.POST:
             raise PermissionDenied()
@@ -256,7 +257,8 @@ def ajax_authenticate(request):
     # Is the user a collaborator of this repo?
     if 'repository' in request.GET and github:
         gh = GithubWrapper(request)
-        if gh.is_collaborator_on_repo(*request.GET['repository'].split('/', 1)):
+        owner, repository = request.GET['repository'].split('/', 1)
+        if jb.is_collaborator_on_repo(owner, repository, gh.username):
             is_collaborator = True
     return JsonResponse({
         'username': request.user.username,

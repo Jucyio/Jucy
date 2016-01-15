@@ -99,7 +99,7 @@ class GithubMixin(object):
         status_code, data = self.gh.repos[username][repo].get()
         return self._wrap_error(200, status_code, data)
 
-    def is_collaborator_on_repo(self, owner, repo):
+    def is_collaborator_on_repo(self, owner, repo, username):
         """ Return True is the user is collaborator for the specified repository, else False.
 
         Github Reference:
@@ -112,13 +112,13 @@ class GithubMixin(object):
             repo (str) : Github repository name
 
         """
-        status_code, data = self.gh.repos[owner][repo].collaborators[self.username].get()
+        status_code, data = self.gh.repos[owner][repo].collaborators[username].get()
         if status_code == 404:
             return False
         elif status_code == 204:
             return True
         else:
-            raise GithubException(data)
+            raise GithubException(status_code, data)
 
     def search_issues(self, *args, **kwargs):
         """ Do an issue search
