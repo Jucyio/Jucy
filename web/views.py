@@ -142,10 +142,26 @@ def ideas(request, owner, repository, full_repository_name):
     context = global_context(request)
     jb = jucybot.from_config()
 
+    if request.method == 'POST':
+        if not request.user.is_authenticated():
+            return PermissionDenied()
+
+        gh = GithubWrapper(request)
+        issue_id = int(request.POST['issue'])
+        issue = gh.get_issue(owner, repository, issue_id)
+
+        if 'ready' in request.POST:
+            gh.add_labels(owner, repository, issue_id, ['ready'])
+        if 'reject' in request.POST:
+            payload = {'state': 'closed', 'labels': issue['labels'] + ['rejected']}
+            gh.edit_issue(owner, repository, issue_id, payload)
+        if 'duplicate' in request.POST:
+            payload = {'state': 'closed', 'labels': issue['labels'] + ['duplicate']}
+            gh.edit_issue(owner, repository, issue_id, payload)
+
     context['is_collaborator'] = False
     if request.user.is_authenticated():
-        gh = GithubWrapper(request)
-        if gh.is_collaborator_on_repo(owner, repository):
+        if jb.is_collaborator_on_repo(owner, repository, jb.username):
             context['is_collaborator'] = True
 
     if context['is_collaborator'] and 'tab' in request.GET and request.GET['tab'] in kwargs_issues_filters:

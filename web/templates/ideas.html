@@ -55,15 +55,19 @@
 	<div class="actions">
 	  <br>
 	  <div class="row">
+	    <form method="POST">
+	      {% csrf_token %}
+	    <input type="hidden" name="issue" value="{{ issue.number }}"></input>
 	    <div class="col-md-4">
-	      <a class="btn btn-success btn-block" href="#ready">{% trans 'Accept' %}</a>
+	      <button class="btn btn-success btn-block" name="ready">{% trans 'Accept' %}</button>
 	    </div>
 	    <div class="col-md-4">
-	      <a class="btn btn-danger btn-block" href="#reject">{% trans 'Reject' %}</a>
+	      <button class="btn btn-danger btn-block" name="reject">{% trans 'Reject' %}</button>
 	    </div>
 	    <div class="col-md-4">
-	      <a class="btn btn-default btn-block" href="#duplicate">{% trans 'Duplicate' %}</a>
+	      <button class="btn btn-default btn-block" name="duplicate">{% trans 'Duplicate' %}</button>
 	    </div>
+	    </form>
 	  </div>
 	  <br>
 	</div> <!-- actions -->

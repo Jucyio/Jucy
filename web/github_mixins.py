@@ -338,3 +338,19 @@ class GithubMixin(object):
             return self._wrap_error(204, status_code, data)
         except GithubException, exn:
             pass
+
+    def edit_issue(self, owner, repository, issue, payload):
+        """ Edit an issue
+        Github Reference:
+            path: /repos/:owner/:repo/issues/:number
+            method: PATCH
+            reference: https://developer.github.com/v3/issues/#edit-an-issue
+        Args:
+            owner (str) : Github username
+            repository (str) : Github repository
+            issue (int) : Issue id
+            payload (dict) : A dict containing the payload according to the API documentation
+
+        """
+        status_code, data = self.gh.repos[owner][repository].issues[str(issue)].patch(body=payload)
+        return self._wrap_error(200, status_code, data)
