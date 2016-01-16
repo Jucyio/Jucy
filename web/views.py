@@ -153,8 +153,12 @@ def ideas(request, owner, repository, full_repository_name):
         if 'ready' in request.POST:
             gh.add_labels(owner, repository, issue_id, ['ready'])
         if 'reject' in request.POST:
-            payload = {'state': 'closed', 'labels': issue['labels'] + ['rejected']}
-            gh.edit_issue(owner, repository, issue_id, payload)
+            form = forms.AnswerForm(request.POST)
+            if form.is_valid():
+                gh.add_comment(owner, repository, issue_id, form.cleaned_data['content'])
+                payload = {'state': 'closed', 'labels': issue['labels'] + ['rejected']}
+                gh.edit_issue(owner, repository, issue_id, payload)
+
         if 'duplicate' in request.POST:
             payload = {'state': 'closed', 'labels': issue['labels'] + ['duplicate']}
             gh.edit_issue(owner, repository, issue_id, payload)

@@ -202,6 +202,25 @@ class GithubMixin(object):
         status_code, data = self.gh.repos[owner][repository].issues[str(issue)].comments.get()
         return self._wrap_error(200, status_code, data)
 
+    def add_comment(self, owner, repository, issue, body):
+        """ Create a comment in the given issue
+
+        Github Reference:
+            path: /repos/:owner/:repo/issues/:number/comments
+            method: POST
+            reference: https://developer.github.com/v3/issues/comments/#create-a-comment
+
+        Args:
+            owner (str) : Github username
+            repository (str) : Github repository
+            issue (int) : Issue id
+            body (str) : Comment content
+
+        """
+        payload = {'body': body}
+        status_code, data = self.gh.repos[owner][repository].issues[str(issue)].comments.post(body=payload)
+        return self._wrap_error(201, status_code, data)
+
     def create_hook(self, owner, repository, name, config, events):
         """ Create a hook for the given repository
 

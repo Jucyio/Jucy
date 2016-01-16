@@ -8,7 +8,7 @@ class FeedbackForm(forms.Form):
     content = forms.CharField(label='Feedback content', max_length=100)
 
 class AnswerForm(forms.Form):
-    content = forms.CharField(label='Answer content', max_length=100)
+    content = forms.CharField(label='Answer content', max_length=2048)
 
 class _EmailForm(forms.ModelForm):
     user = None
