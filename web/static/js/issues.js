@@ -134,4 +134,20 @@ $(document).ready(function() {
 	}
 	return false;
     });
+    $('a[href=#reject]').click(function(e) {
+    	e.preventDefault();
+	var buttons = $(this).closest("#buttons");
+	buttons.hide("slow");
+	var rejectform = buttons.closest('.issue').find("#reject-form");
+	rejectform.show("slow");
+	return false;
+    });
+    $('a[href=#cancel]').click(function(e) {
+    	e.preventDefault();
+	var form = $(this).closest("#reject-form");
+	form.hide("slow");
+	var buttons = form.closest('.issue').find("#buttons");
+	buttons.show("slow");
+	return false;
+    });
 });

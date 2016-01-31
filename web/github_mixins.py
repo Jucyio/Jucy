@@ -99,7 +99,7 @@ class GithubMixin(object):
         status_code, data = self.gh.repos[username][repo].get()
         return self._wrap_error(200, status_code, data)
 
-    def is_collaborator_on_repo(self, owner, repo):
+    def is_collaborator_on_repo(self, owner, repo, username):
         """ Return True is the user is collaborator for the specified repository, else False.
 
         Github Reference:
@@ -112,13 +112,13 @@ class GithubMixin(object):
             repo (str) : Github repository name
 
         """
-        status_code, data = self.gh.repos[owner][repo].collaborators[self.username].get()
+        status_code, data = self.gh.repos[owner][repo].collaborators[username].get()
         if status_code == 404:
             return False
         elif status_code == 204:
             return True
         else:
-            raise GithubException(data)
+            raise GithubException(status_code, data)
 
     def search_issues(self, *args, **kwargs):
         """ Do an issue search
@@ -201,6 +201,25 @@ class GithubMixin(object):
         """
         status_code, data = self.gh.repos[owner][repository].issues[str(issue)].comments.get()
         return self._wrap_error(200, status_code, data)
+
+    def add_comment(self, owner, repository, issue, body):
+        """ Create a comment in the given issue
+
+        Github Reference:
+            path: /repos/:owner/:repo/issues/:number/comments
+            method: POST
+            reference: https://developer.github.com/v3/issues/comments/#create-a-comment
+
+        Args:
+            owner (str) : Github username
+            repository (str) : Github repository
+            issue (int) : Issue id
+            body (str) : Comment content
+
+        """
+        payload = {'body': body}
+        status_code, data = self.gh.repos[owner][repository].issues[str(issue)].comments.post(body=payload)
+        return self._wrap_error(201, status_code, data)
 
     def create_hook(self, owner, repository, name, config, events):
         """ Create a hook for the given repository
@@ -338,3 +357,19 @@ class GithubMixin(object):
             return self._wrap_error(204, status_code, data)
         except GithubException, exn:
             pass
+
+    def edit_issue(self, owner, repository, issue, payload):
+        """ Edit an issue
+        Github Reference:
+            path: /repos/:owner/:repo/issues/:number
+            method: PATCH
+            reference: https://developer.github.com/v3/issues/#edit-an-issue
+        Args:
+            owner (str) : Github username
+            repository (str) : Github repository
+            issue (int) : Issue id
+            payload (dict) : A dict containing the payload according to the API documentation
+
+        """
+        status_code, data = self.gh.repos[owner][repository].issues[str(issue)].patch(body=payload)
+        return self._wrap_error(200, status_code, data)

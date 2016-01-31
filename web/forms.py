@@ -3,6 +3,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
 
+class AnswerForm(forms.Form):
+    content = forms.CharField(label='Answer content', max_length=2048)
+
 class _EmailForm(forms.ModelForm):
     user = None
     def __init__(self, *args, **kwargs):

@@ -152,11 +152,26 @@ def ideas(request, owner, repository, full_repository_name):
 
     context['is_collaborator'] = False
     if request.user.is_authenticated():
-       try:
-           gh = GithubWrapper(request)
-           if gh.is_collaborator_on_repo(owner, repository):
-               context['is_collaborator'] = True
-       except ObjectDoesNotExist: pass
+        if jb.is_collaborator_on_repo(owner, repository, jb.username):
+            context['is_collaborator'] = True
+
+    if request.method == 'POST' and context['is_collaborator']:
+        gh = GithubWrapper(request)
+        issue_id = int(request.POST['issue'])
+        issue = gh.get_issue(owner, repository, issue_id)
+
+        if 'ready' in request.POST:
+            gh.add_labels(owner, repository, issue_id, ['ready'])
+        if 'reject' in request.POST:
+            form = forms.AnswerForm(request.POST)
+            if form.is_valid():
+                gh.add_comment(owner, repository, issue_id, form.cleaned_data['content'])
+                payload = {'state': 'closed', 'labels': issue['labels'] + ['rejected']}
+                gh.edit_issue(owner, repository, issue_id, payload)
+
+        if 'duplicate' in request.POST:
+            payload = {'state': 'closed', 'labels': issue['labels'] + ['duplicate']}
+            gh.edit_issue(owner, repository, issue_id, payload)
 
     if context['is_collaborator'] and 'tab' in request.GET and request.GET['tab'] in kwargs_issues_filters:
         context['tab'] = request.GET.getlist('tab')
@@ -252,7 +267,8 @@ def ajax_authenticate(request, from_api=False):
     # Is the user a collaborator of this repo?
     if 'repository' in request.GET and github:
         gh = GithubWrapper(request)
-        if gh.is_collaborator_on_repo(*request.GET['repository'].split('/', 1)):
+        owner, repository = request.GET['repository'].split('/', 1)
+        if gh.is_collaborator_on_repo(owner, repository, gh.username):
             is_collaborator = True
     return JsonResponse({
         'username': request.user.username,
