@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bootstrap_form_horizontal',
     'social.apps.django_app.default',
+    'corsheaders',
     #'rest_framework',
     'web',
     'widget',
@@ -46,6 +47,8 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -128,6 +131,9 @@ WEBHOOKS_SECRET_KEY = None  # FILL ME
 LANDING_MODE = False
 
 AWS_SES_RETURN_PATH = 'jucybot@jucy.io'
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_URLS_REGEX = r'^/_api/.*$'
 
 try:
     from local_settings import *

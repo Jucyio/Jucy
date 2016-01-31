@@ -1,10 +1,11 @@
 Django==1.7.3
 -e git://github.com/Jucyio/PyGithub.git@5e34bfeb2ee2c96aed5122625b2717d40251940d#egg=PyGithub-master
 PyJWT==0.4.1
--e git://github.com/Jucyio/agithub.git@46111875d3712f4dce39b7deac6b0fc8583e7a33#egg=agithub-master
+-e git://github.com/Jucyio/agithub.git@46111875d3712f4dce39b7deac6b0fc8583e7a33#egg=agithub-dev
 argparse==1.2.1
 boto==2.39.0
 django-bootstrap-form-horizontal==0.0.4
+django-cors-headers==1.1.0
 django-filter==0.9.1
 django-markdown-deux==1.0.5
 django-ses==0.7.0
