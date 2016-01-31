@@ -1,13 +1,21 @@
 Django==1.7.3
--e git://github.com/Jucyio/agithub.git@master#egg=agithub
+-e git://github.com/Jucyio/PyGithub.git@5e34bfeb2ee2c96aed5122625b2717d40251940d#egg=PyGithub-master
 PyJWT==0.4.1
+-e git://github.com/Jucyio/agithub.git@46111875d3712f4dce39b7deac6b0fc8583e7a33#egg=agithub-master
 argparse==1.2.1
+boto==2.39.0
+django-bootstrap-form-horizontal==0.0.4
+django-filter==0.9.1
+django-markdown-deux==1.0.5
+django-ses==0.7.0
+djangorestframework==3.3.2
+markdown2==2.3.0
 mock==1.0.1
 oauthlib==0.7.2
+python-dateutil==2.4.0
 python-openid==2.2.5
 python-social-auth==0.2.2
 requests==2.6.0
 requests-oauthlib==0.4.2
 six==1.9.0
 wsgiref==0.1.2
-django-bootstrap-form-horizontal==0.0.4

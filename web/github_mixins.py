@@ -308,7 +308,7 @@ class GithubMixin(object):
         args:
             owner (str) : github username
             repository (str) : github repository
-            issue (int) : issue id
+            issue (int) : issue number
 
         """
         status_code, data = self.gh.repos[owner][repository].issues[str(issue)].get()

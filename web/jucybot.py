@@ -46,9 +46,9 @@ class JucyBot(GithubMixin):
         except GithubException, e:
             pass
 
-    def create_issue(self, owner, repository, title, contents, label_name):
-        body = self.format_issue(contents, label_name)
-        return super(Jucybot, self).create_issue(owner, repository, title, body, label_name)
+    def create_issue(self, owner, repository, title, contents, labels):
+        body = self.format_issue(contents, labels)
+        return super(JucyBot, self).create_issue(owner, repository, title, body, labels)
 
     def change_issue_label(self, owner, repository, issue, old_label, new_label):
        try:
@@ -60,10 +60,13 @@ class JucyBot(GithubMixin):
        except GithubException, e:
            pass
 
-    def format_issue(self, contents, label_name):
+    def format_issue(self, contents, labels):
+        return contents
+        if not contents:
+            contents = ''
         # TODO(db0): Specify the boilerplate content for Jucy issues.
         boilerplate = """*This issue was filed by Jucy*
-Category: %(label_name)s
+Category: %(labels)s
 
 %(contents_as_quote)s
 """
@@ -71,7 +74,7 @@ Category: %(label_name)s
                                           initial_indent='> ',
                                           subsequent_indent='> ')
         return boilerplate % {
-            'label_name': label_name,
+            'labels': labels,
             'contents_as_quote': contents_as_quote,
         }
 

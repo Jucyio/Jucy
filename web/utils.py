@@ -3,6 +3,19 @@ import random
 from web import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from django.db.models import Count, Q, F
+from django.db.models import Prefetch
+from django.template import Context
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+
+def send_email(subject, template_name, to=[], context={}, from_email=settings.AWS_SES_RETURN_PATH):
+    context = Context(context)
+    plaintext = get_template('emails/' + template_name + '.txt').render(context)
+    htmly = get_template('emails/' + template_name + '.html').render(context)
+    email = EmailMultiAlternatives(subject, plaintext, from_email, to)
+    email.attach_alternative(htmly, "text/html")
+    email.send()
 
 def gravatar(email, size=200):
     return ("http://www.gravatar.com/avatar/"
@@ -88,3 +101,19 @@ def is_connected_github(user):
         return True
     except ObjectDoesNotExist:
         return False
+
+def get_issues_subscribers(request, database_repository, issues):
+    """
+    Takes a database repository and github issues
+    Returns the issues with subscribed True/False on each and total_subscribers as an int
+    """
+    database_ideas = database_repository.ideas.filter(number__in=[issue['number'] for issue in issues]).annotate(total_subscribers = Count('subscribers'))
+    database_ideas = database_ideas.prefetch_related(Prefetch('subscribers', queryset=models.User.objects.filter(username=request.user.username), to_attr='subscribed'))
+    for issue in issues:
+        issue['total_subscribers'] = 0
+        issue['subscribed'] = False
+        for idea in database_ideas:
+            if idea.number == issue['number']:
+                issue['total_subscribers'] = idea.total_subscribers
+                issue['subscribed'] = bool(idea.subscribed)
+    return issues

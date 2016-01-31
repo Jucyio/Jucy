@@ -1,0 +1,13 @@
+{% load i18n %}
+<div class="issue" id="issue{{ issue.id }}">
+  <form method="POST" id="submit" action="/_ajax/{{ full_repository_name }}/ideas/create/">
+    {% csrf_token %}
+    <input type="text" name="title" maxlength="1023" placeholder='Example: "Add a subscribe button to receive news by email"' data-toggle="tooltip" data-placement="top" title="{% trans 'Keep it simple! Click more to add a more detailed description.' %}" required /><br>
+    <textarea maxlength="1023" name="content" class="collapse" id="submitMore" placeholder="{% trans 'More details about your idea' %}"></textarea>
+    <div class="text-right">
+      <a href="#submitMore" class="btn btn-link more" data-toggle="collapse">{% trans 'More' %}</a>
+      <i class="flaticon-loader" style="display: none;"></i>
+      <input class="btn btn-jucy" type="submit" value="{% trans 'Submit' %}">
+    </div>
+  </form>
+</div>

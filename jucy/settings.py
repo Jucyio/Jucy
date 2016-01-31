@@ -38,7 +38,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bootstrap_form_horizontal',
     'social.apps.django_app.default',
+    #'rest_framework',
     'web',
+    'widget',
+    'api',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -89,6 +92,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'web/static'),
+    os.path.join(BASE_DIR, 'widget/static'),
+)
 STATIC_URL = '/_static/'
 
 # Social auth settings
@@ -119,6 +126,8 @@ WEBHOOKS_CALLBACK_URL = (
 WEBHOOKS_SECRET_KEY = None  # FILL ME
 
 LANDING_MODE = False
+
+AWS_SES_RETURN_PATH = 'jucybot@jucy.io'
 
 try:
     from local_settings import *

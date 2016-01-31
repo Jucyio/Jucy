@@ -1,0 +1,20 @@
+{% load i18n %}
+{% for error in authenticate_form.non_field_errors %}
+<div class="jucy-error">{{ error }}</div>
+{% endfor %}
+<div class="jucy-login">
+  <p>{% trans 'Enter your email to start voting, sharing ideas, and more.' %}</p>
+  <div class="jucy-form">
+    {% for error in authenticate_form.email.errors %}
+    <div class="jucy-error">{{ error }}</div>
+    {% endfor %}
+    <input class="jucy-email-form" maxlength="75" name="email" placeholder="{% trans 'Email address' %}" type="email" required value="{% if authenticate_form.email.value %}{{ authenticate_form.email.value }}{% endif %}">
+    {% if authenticate_form.fields.password %}
+    {% for error in authenticate_form.password.errors %}
+    <div class="jucy-error">{{ error }}</div>
+    {% endfor %}
+    <input class="jucy-password-form" name="password" placeholder="{% trans 'Password' %}" type="password" required>
+    {% endif %}
+    <input type="submit" class="jucy-submit-email" value="Go">
+  </div>
+</div>

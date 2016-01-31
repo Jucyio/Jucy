@@ -5,9 +5,12 @@ import jucybot
 import forms
 import labels
 import models
+from django.db.models import Count, Q, F
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Prefetch
 from django.core.urlresolvers import resolve
+from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.forms.util import ErrorList
@@ -57,11 +60,14 @@ def pick(request):
     if 'repository' in request.POST:
         return redirect('/' + request.POST['repository'] + '/setup')
     if not request.user.is_authenticated():
-        return login_error
+        return redirect('/')
 
     context = global_context(request)
     jb = jucybot.from_config()
-    gh = GithubWrapper(request)
+    try:
+        gh = GithubWrapper(request)
+    except ObjectDoesNotExist:
+        return redirect('/_oauth/login/github')
 
     user_repos = gh.get_paginated_repos()
     jucy_repos = jb.get_paginated_repos()
@@ -125,7 +131,7 @@ def prepare_repo_for_jucy(request, owner, full_repository_name, repository):
     jb.setup_hooks_on_repo(owner, repository, gh)
 
     # Step 4: create a Repo object and save it
-    repo_model, _ =  models.Repo.objects.get_or_create(name=repository, owner=owner)
+    repo_model, _ =  models.Repository.objects.get_or_create(name=repository, owner=owner, defaults={'contact_email': request.user.email})
     repo_model.save()
     return redirect('/%s' % full_repository_name)
 
@@ -142,19 +148,32 @@ def ideas(request, owner, repository, full_repository_name):
     context = global_context(request)
     jb = jucybot.from_config()
 
+    context['database_repository'] = get_object_or_404(models.Repository, owner=owner, name=repository)
+
     context['is_collaborator'] = False
     if request.user.is_authenticated():
-        gh = GithubWrapper(request)
-        if gh.is_collaborator_on_repo(owner, repository):
-            context['is_collaborator'] = True
+       try:
+           gh = GithubWrapper(request)
+           if gh.is_collaborator_on_repo(owner, repository):
+               context['is_collaborator'] = True
+       except ObjectDoesNotExist: pass
 
     if context['is_collaborator'] and 'tab' in request.GET and request.GET['tab'] in kwargs_issues_filters:
         context['tab'] = request.GET.getlist('tab')
+
     prepare_issues_context(context, jb, full_repository_name, repository, 'ideas', issues_to_get=context['tab'] if 'tab' in context else (['new'] if context['is_collaborator'] else ['ready', 'new']))
 
+    context['issues'] = get_issues_subscribers(request, context['database_repository'], context['issues'])
     context['request'] = request
     context['full_repository_name'] = full_repository_name
     return render(request, 'ideas.html', context)
+
+def widget(request, owner, repository, full_repository_name):
+    context = global_context(request)
+    context['current'] = 'widget'
+    context['full_repository_name'] = full_repository_name
+    context['repository'] = full_repository_name
+    return render(request, 'widget.html', context)
 
 def questions(request, owner, repository, full_repository_name):
     context = global_context(request)
@@ -176,24 +195,14 @@ def create_idea(request, owner, repository, full_repository_name):
             pass #FIXME
     return redirect('/%s' % full_repository_name)
 
-def get_issue_comments(request, owner, repository, full_repository_name, issue_id):
-    '''
-    Get the comments of an issue
-    '''
-    gh = GithubWrapper(request)
-    issue_id = int(issue_id)
-    try:
-        comments = gh.get_comments(owner, repository, issue_id)
-    except exn:
-        pass #FIXME
-    comments = [comment_command(comment) for comment in comments]
-    return render(request, 'ajax/comments.html', {
-        'comments': comments,
-    })
-
-def ajax_authenticate(request):
+def ajax_authenticate(request, from_api=False):
     github = None
+    user = None
     if not request.user.is_authenticated():
+        if request.method != 'POST' and from_api:
+            return render(request, 'include/authenticate_form_api.html', {
+                'authenticate_form': forms.EmailForm(),
+            })
         if request.method != 'POST' or not request.POST or 'email' not in request.POST:
             raise PermissionDenied()
         if 'password' in request.POST:
@@ -201,8 +210,9 @@ def ajax_authenticate(request):
         else:
             form = forms.EmailForm(request.POST)
         if not form.is_valid():
-            return render(request, 'include/authenticate_form.html', {
+            return render(request, 'include/authenticate_form.html' if not from_api else 'include/authenticate_form_api.html', {
                 'authenticate_form': form,
+                'from_api': from_api,
             })
         # User password checked in the form is_valid
         if form.user:
@@ -217,8 +227,9 @@ def ajax_authenticate(request):
                     form_withpassword.full_clean()
                     errors = form_withpassword._errors.setdefault('password', ErrorList())
                     errors.append(_('This account requires a password.'))
-                    return render(request, 'include/authenticate_form.html', {
+                    return render(request, 'include/authenticate_form.html' if not from_api else 'include/authenticate_form_api.html', {
                         'authenticate_form': form_withpassword,
+                        'from_api': from_api,
                     })
                 # If they don't, do they need to login with github?
                 github = is_connected_github(user)
@@ -235,7 +246,8 @@ def ajax_authenticate(request):
         login(request, user)
     if github is None:
         github = is_connected_github(request.user)
-    request.user = user
+    if user:
+        request.user = user
     is_collaborator = False
     # Is the user a collaborator of this repo?
     if 'repository' in request.GET and github:

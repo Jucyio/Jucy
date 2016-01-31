@@ -21,6 +21,9 @@
 	  <ul class="nav navbar-nav navbar-right">
 	    {% if repository %}
 	    <li class="{% if current == 'ideas' %}active{% endif %}"><a href="/{{ repository }}/ideas/">{% trans 'Ideas' %}</a></li>
+	    {% if is_collaborator or current == 'widget' %}
+	    <li class="{% if current == 'widget' %}active{% endif %}"><a href="/{{ repository }}/widget/">{% trans 'Widget' %}</a></li>
+	    {% endif %}
 	    {% else %}
 	    <li class="{% if current == 'about' %}active{% endif %}"><a href="/_about/">{% trans 'About' %}</a></li>
 	    {% endif %}

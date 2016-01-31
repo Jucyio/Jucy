@@ -1,0 +1,461 @@
+
+@import "less/variables.less";
+@import "less/mixins.less";
+@import "less/markdown.less";
+
+@jucy-widget-border-radius: 10px;
+
+@-moz-keyframes jucy-spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes jucy-spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes jucy-spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.jucy-spin(@time) {
+    -webkit-animation: jucy-spin @time linear infinite;
+    -moz-animation: jucy-spin @time linear infinite;
+    animation: jucy-spin @time linear infinite;
+}
+
+.jucy-pulse(@time) {
+  -moz-animation: jucy-spin @time infinite steps(8);
+  -webkit-animation: jucy-spin @time infinite steps(8);
+  animation: jucy-spin @time infinite steps(8);
+}
+
+@import url(http://fonts.googleapis.com/css?family=Oxygen:400,300,700);
+
+@font-face {
+    font-family: 'Jucy-Flaticon';
+    src: url('http://jucy.io/_static/fonts/flaticon.eot');
+    src: url('http://jucy.io/_static/fonts/flaticon.eot#iefix') format('embedded-opentype'),
+    url('http://jucy.io/_static/fonts/flaticon.woff') format('woff'),
+    url('http://jucy.io/_static/fonts/flaticon.ttf') format('truetype'),
+    url('http://jucy.io/_static/fonts/flaticon.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Jucy-Brandy';
+    src: url('http://jucy.io/_static/fonts/CW_BANDY.ttf');
+}
+
+.jucy-logo {
+    font-family: 'Jucy-Brandy', sans-serif;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+#jucy {
+    background-color: @mainColor;
+    &.jucy-ideas, &.jucy-help, &.jucy-contact {
+	&:before {
+	    font-family: Jucy-Flaticon;
+	    color: white;
+	    font-size: 25px;
+	    display: block;
+	    padding: 12px;
+	}
+    }
+    &.jucy-home {
+	background-image: url('http://jucy.io/_static/img/whiteslice.svg');
+	background-size: 122%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	.jucy-spin(30s);
+    }
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 100%;
+    border: 1px @secondaryColor solid;
+    cursor: pointer;
+    .lightshadow(@secondaryColor);
+    &:hover, &:focus {
+	.lightshadow(@mainColor);
+    }
+}
+
+#jucy.jucy-ideas:before, #jucy-box .jucy-action.jucy-ideas:before, #jucy-box .jucy-footer a[href='#jucy-ideas']:before {
+	content: "\e009";
+}
+#jucy.jucy-help:before, #jucy-box .jucy-action.jucy-help:before, #jucy-box .jucy-footer a[href='#jucy-help']:before {
+	content: "\e00f";
+}
+#jucy.jucy-contact:before, #jucy-box .jucy-action.jucy-contact:before, #jucy-box .jucy-footer a[href='#jucy-contact']:before {
+	content: "\e010";
+}
+
+#jucy-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    background-color: @mainColor;
+    background-color: black;
+    opacity: .5;
+}
+
+#jucy-box-wrapper {
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    -webkit-overflow-scrolling: touch;
+    outline: 0;
+    margin: 30px auto;
+}
+
+#jucy-box {
+    box-sizing: border-box;
+    width: 600px;
+    position: relative;
+    background: white;
+    border-radius: @jucy-widget-border-radius;
+    margin: auto;
+    font-family: 'Oxygen', sans-serif;
+    font-size: 16px;
+    color: #666;
+    h1, h2, h3, h4, h5, h6, p, button {
+	font-size: 1em;
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+	text-decoration: none;
+    }
+    input, textarea {
+	font-family: 'Oxygen', sans-serif;
+	font-size: 1em;
+    }
+    a {
+	color: @secondaryColor;
+	text-decoration: none;
+	transition: color 0.2s ease;
+	&:hover, &:focus {
+	    color: @mainColor;
+	    text-decoration: none;
+	}
+    }
+    #jucy-content {
+	padding: 20px;
+    }
+    .jucy-close {
+	&:before {
+	    color: #ccc;
+	    font-family: Jucy-Flaticon;
+	    content: "\e00a";
+	    font-size: 0.6em;
+	    position: absolute;
+	    right: 20px;
+	    top: 20px;
+	}
+    }
+    a {
+	text-decoration: none;
+    }
+    .jucy-actions {
+	padding: 50px 0;
+	padding-bottom: 10px;
+    }
+    .jucy-action {
+	width: 33.3%;
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	color: @mainColor;
+	transition: opacity 0.8s ease;
+	span {
+	    display: block;
+	    margin-top: 25px;
+	    font-weight: bold;
+	}
+	p {
+	    color: @secondaryColor;
+	    font-size: 0.75em;
+	    padding: 0 20px;
+	}
+	&:before {
+	    display: inline-block;
+	    width: 70px;
+	    height: 70px;
+	    font-size: 4em;
+	    font-style: normal;
+	    background: @mainColor;
+	    color: white;
+	    border-radius: 50%;
+	    padding: 20px;
+	    transition: all 0.2s ease;
+	}
+	&:hover, &:focus {
+	    opacity: 0.8;
+	    &:before {
+		-webkit-transform: rotate(10deg);
+		transform:rotate(10deg);
+	    }
+	}
+    }
+    .jucy-footer {
+	border-top: 1px solid #eee;
+	padding: 5px 20px 10px 20px;
+	min-height: 20px;
+	color: #ccc;
+	a[href^='#jucy-'] {
+	    font-size: 0.8em;
+	    padding: 0 5px;
+	    color: #ccc;
+	    transition: color 0.2s ease;
+	    &:hover, &:focus {
+		color: #aaa;
+	    }
+	    &:before {
+		padding-right: 5px;
+	    }
+	}
+	.jucy-watermark {
+	    color: #ccc;
+	    opacity: 0.8;
+	    display: block;
+	    float: right;
+	    text-align: right;
+	    font-size: 0.6em;
+	    transition: opacity 0.2s ease;
+	    .jucy-logo {
+		padding-left: 5px;
+		color: @mainColor;
+		font-size: 15px;
+	    }
+	    img {
+		display: inline-block;
+		height: 20px;
+		margin: -4px 0;
+	    }
+	    &:hover, &:focus {
+		opacity: 1;
+	    }
+	}
+    }
+    .jucy-action:before, .jucy-footer a[href^='#jucy-']:before {
+    	font-family: Jucy-Flaticon;
+    }
+    ._jucy-loader(@width) {
+	color: @secondaryColor;
+	font-family: Jucy-Flaticon;
+	font-size: @width;
+	width: @width;
+	height: @width;
+	margin: auto;
+	margin-top: @width;
+	margin-bottom: @width;
+	.jucy-pulse(1s);
+	&:before {
+	    content: "\e00c";
+	}
+    }
+    .jucy-loader-small {
+	._jucy-loader(20px);
+	display: inline-block;
+	margin-left: 20px;
+	margin-right: 10%;
+    }
+    .jucy-loader {
+	._jucy-loader(50px);
+    }
+    .jucy-ideas-title {
+	text-align: center;
+	color: #666;
+	font-weight: normal;
+	margin: 0;
+	padding: 15px;
+	padding-top: 0;
+    }
+    .jucy-ideas-vote {
+	width: 100%;
+    }
+    .jucy-vote-idea {
+	vertical-align: top;
+	display: inline-block;
+	box-sizing: border-box;
+	width: 50%;
+    }
+    .jucy-panel {
+	margin: 10px;
+	padding: 10px;
+	border: 1px solid @mainColor;
+	border-radius: @jucy-widget-border-radius;
+    }
+    .jucy-idea-title {
+	font-size: 1.2em;
+	text-align: center;
+    }
+    input[type="text"], input[type="email"], input[type="password"], textarea {
+	display: block;
+	width: 80%;
+	margin: auto;
+	padding: 15px;
+	box-sizing: border-box;
+	border-radius: @jucy-widget-border-radius;
+	box-shadow: none;
+	border: 1px solid @mainColor;
+	font-size: 1em;
+	margin-bottom: 50px;
+	margin-top: 40px;
+    }
+    .jucy-idea-details-button {
+	font-size: 0.9em;
+	padding: 10px;
+	color: #ccc;
+	&:hover, &:focus {
+            color: #aaa;
+	}
+    }
+    .jucy-idea-details {
+	font-size: 0.9em;
+	padding: 10px;
+    }
+    .jucy-ideas-more {
+	display: block;
+	color: #ccc;
+	text-align: right;
+	font-size: 0.8em;
+	margin-top: -10px;
+	margin-bottom: 10px;
+	margin-right: 15px;
+	&:hover, &:focus {
+            color: #aaa;
+	}
+    }
+    .jucy-idea-vote-button {
+	background-color: @mainColor;
+	color: white;
+	text-align: center;
+	display: block;
+	margin: -10px;
+	border-bottom-right-radius: @jucy-widget-border-radius;
+	border-bottom-left-radius: @jucy-widget-border-radius;
+	margin-top: 10px;
+	padding: 10px;
+	transition: background-color 0.2s ease;
+	&:before {
+	    content: "\e008";
+	    font-family: Jucy-Flaticon;
+	    padding-left: -0px;
+	    padding-right: 10px;
+	}
+	&:hover, &:focus {
+	    background-color: @secondaryColor;
+	    color: white;
+	}
+    }
+    .jucy-or {
+	color: #ccc;
+	padding-left: 30px;
+    }
+    .jucy-ideas-buttons {
+	text-align: center;
+	.jucy-suggest-idea {
+	}
+    }
+    .jucy-error {
+	background: #eee;
+	color: #aaa;
+	padding: 10px 20px;
+	border-radius: @jucy-widget-border-radius;
+	width: 80%;
+	margin: auto;
+    }
+    .jucy-login {
+	margin: auto;
+	width: 80%;
+	margin-top: 50px;
+	margin-bottom: 40px;
+	text-align: right;
+	p {
+	    text-align: left;
+	}
+	input[type="email"], input[type="password"] {
+	    margin: 10px 0;
+	    width: 100%;
+	}
+    }
+    .jucy-submit-email, .jucy-submit-idea, .jucy-submit-message {
+	background-color: @mainColor;
+	border-radius: @jucy-widget-border-radius;
+	border: none;
+	color: white;
+	padding: 5px 10px;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+	&:hover {
+	    background-color: @secondaryColor;
+	}
+    }
+    .jucy-suggest-idea-form {
+	text-align: right;
+	input[type="text"] {
+	    margin-bottom: 10px;
+	}
+	textarea {
+	    margin-top: 0;
+	    margin-bottom: 10px;
+	}
+	.jucy-submit-idea-more {
+	    color: #a9a9a9;
+	    &:hover, &:focus {
+		color: #777;
+	    }
+	}
+    }
+    .jucy-thank-you {
+	text-align: center;
+    }
+    .jucy-thank-you-title {
+	font-size: 4em;
+	color: @mainColor;
+    }
+    .jucy-thank-you-content {
+	font-size: 1.2em;
+    }
+    .jucy-contact-form {
+	textarea {
+	    margin-bottom: 10px;
+	}
+	text-align: right;
+    }
+    .jucy-submit-idea, .jucy-submit-message {
+	margin-bottom: 50px;
+	margin-right: 10%;
+	margin-left: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    #jucy-box {
+	width: auto;
+    }
+    #jucy-box-wrapper {
+	margin: 10px;
+    }
+}
+
+@media (max-width: 500px) {
+    #jucy-box {
+	width: auto;
+	.jucy-actions {
+	    .jucy-action {
+		width: 100%;
+		margin-bottom: 20px;
+	    }
+	}
+	.jucy-vote-idea {
+	    width: 100%;
+	}
+    }
+}

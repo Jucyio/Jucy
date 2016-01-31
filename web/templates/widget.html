@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block js %}
+<script type="text/javascript" src="/_static/bower/marked/lib/marked.js"></script>
+<script type="text/javascript" src="/_static/bower/github-wiki/js/githubwiki.js"></script>
+<script>
+  githubwiki.setWiki('Jucyio', 'Jucy');
+  githubwiki.get('Widget.md', function(data) {
+    $('#wiki').html(data);
+  $('#wiki code').last().text($('#wiki code').last().text().replace('Jucyio/Jucy', '{{ full_repository_name }}'));
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div id="wiki"></div>
+</div>
+{% endblock %}

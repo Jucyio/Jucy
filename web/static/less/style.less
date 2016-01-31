@@ -11,6 +11,7 @@
 @import "variables.less";
 @import "mixins.less";
 @import "oval-speech.less";
+@import "markdown.less";
 
 @font-face {
     font-family: "Brandy";
@@ -32,6 +33,9 @@ body {
     font-family: 'Oxygen', sans-serif;
     font-size: 14px;
     .a-variant(@mainColor, @secondaryColor);
+    a {
+	transition: color 0.4s;
+    }
 }
 
 main {
@@ -188,28 +192,6 @@ footer {
     ul li {
 	list-style-type: none;
 	padding: 4px 0;
-    }
-}
-
-// ************************
-// Markdown
-
-.marked {
-    table {
-	width: 100%;
-	tr {
-	    border-top: 1px solid #ccc;
-	    td, th {
-		padding: 8px;
-		border: 1px solid #ddd;
-	    }
-	}
-	tr:nth-child(2n) {
-	    background-color: #f8f8f8;
-	}
-	th {
-	    background-color: #eee;
-	}
     }
 }
 
@@ -398,6 +380,7 @@ body#current-index {
     border-radius: 10px;
     color: #555;
     min-height: 134px;
+    overflow: auto;
     .boxshadow(@lighterColor);
 
     a.title {
@@ -476,10 +459,14 @@ body#current-index {
 	.flaticon-github-head {
 	    opacity: 0.5;
 	}
+	form {
+	    display: inline-block;
+	}
 	a {
 	    display: inline-block;
 	    margin: 0 10px;
 	    img {
+		transition: opacity 0.4s;
 		opacity: 0.8;
 		margin-top: -15px;
 		width: 28px;
@@ -487,14 +474,48 @@ body#current-index {
 		border-radius: 50%;
 	    }
 	}
-	a[href='#messages'] {
+	button {
+	    display: inline-block;
+	    border: 0;
+	    background-color: transparent;
+	    -webkit-box-shadow: none;
+	    margin: 0 10px;
+	    padding: 0;
+	    box-shadow: none;
+	    color: @mainColor;
+	    transition: color 0.4s;
+	    &:hover, &:focus {
+		color: @secondaryColor;
+	    }
+	}
+	form[action*='/unvote/'] button {
+	    .flaticon-heart {
+		-webkit-text-stroke: 2px @secondaryColor;
+	    }
+	}
+	a[href='#messages'], button[name='like'] {
 	    .text {
 		display: inline-block;
 		position: relative;
 		color: white;
 		right: -21px;
 		margin-left: -21px;
-		top: -7px;
+		top: -6px;
+	    }
+	}
+    }
+    form#submit {
+	input[type="text"], textarea {
+	    border: 2px solid @lighterColor;
+	    width: 100%;
+	    border-radius: 10px;
+	    padding: 10px;
+	    margin: 5px 0;
+	}
+	.btn-link.more {
+	    color: #a9a9a9;
+	    &:hover {
+		color: #777;
 	    }
 	}
     }
@@ -538,7 +559,7 @@ body#current-pick {
 	}
     }
     .create-dashboard {
-	margin-top: 150px;
+	margin: 150px 0;
 	.twitter-typeahead {
 	    width: 100%;
 	}
@@ -546,6 +567,16 @@ body#current-pick {
 	    margin: 50px 0;
 	    width: 100%;
 	    padding: 30px 20px;
+	}
+	.tt-menu {
+	    margin-top: -40px;
+	    .tt-suggestion {
+		cursor: pointer;
+		padding: 5px;
+		.tt-highlight {
+		    color: @mainColor;
+		}
+	    }
 	}
     }
 }
