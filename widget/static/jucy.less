@@ -1,4 +1,10 @@
 
+// Compile with:
+//@import "../../web/static/less/variables.less";
+//@import "../../web/static/less/mixins.less";
+//@import "../../web/static/less/markdown.less";
+
+// Test with:
 @import "less/variables.less";
 @import "less/mixins.less";
 @import "less/markdown.less";
@@ -68,6 +74,7 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
+    z-index: 10000;
     border-radius: 100%;
     border: 1px @secondaryColor solid;
     cursor: pointer;
@@ -183,6 +190,8 @@
 	    padding: 0 20px;
 	}
 	&:before {
+	    box-sizing: content-box;
+	    line-height: 1em;
 	    display: inline-block;
 	    width: 70px;
 	    height: 70px;
@@ -203,6 +212,7 @@
 	}
     }
     .jucy-footer {
+	box-sizing: content-box;
 	border-top: 1px solid #eee;
 	padding: 5px 20px 10px 20px;
 	min-height: 20px;
@@ -246,6 +256,7 @@
     	font-family: Jucy-Flaticon;
     }
     ._jucy-loader(@width) {
+	line-height: 1em;
 	color: @secondaryColor;
 	font-family: Jucy-Flaticon;
 	font-size: @width;
@@ -294,6 +305,7 @@
     .jucy-idea-title {
 	font-size: 1.2em;
 	text-align: center;
+	line-height: 1em;
     }
     input[type="text"], input[type="email"], input[type="password"], textarea {
 	display: block;
